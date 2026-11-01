@@ -72,6 +72,16 @@
           Live Telemetry Ready
         </span>
 
+        <button id="audioToggleBtn" class="inline-flex items-center space-x-1 px-2.5 py-1 rounded-full font-semibold bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 text-amber-400 transition cursor-pointer" title="Toggle Pit Wall Telemetry Audio">
+          <span id="audioIcon">🔊</span>
+          <span id="audioLabel" class="hidden md:inline">FX On</span>
+        </button>
+
+        <button id="revEngineBtn" class="inline-flex items-center space-x-1 px-2.5 py-1 rounded-full font-semibold bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 text-amber-300 transition cursor-pointer" title="Rev F1 V10 Engine Note">
+          <span>🏎️</span>
+          <span class="hidden md:inline">Rev V10</span>
+        </button>
+
         <a href="https://instagram.com/forza_ferrari_15" target="_blank" rel="noopener noreferrer" class="hidden sm:inline-flex items-center space-x-1.5 px-2.5 py-1 rounded-full font-medium bg-gradient-to-r from-purple-900/30 to-pink-900/30 border border-pink-500/30 text-pink-300 hover:text-white transition">
           <span>Developer Profile</span>
         </a>
@@ -209,6 +219,18 @@
       <button id="tabSimulatorBtn" class="px-4 py-2.5 font-bold text-sm border-b-2 border-transparent text-zinc-400 hover:text-zinc-200 flex items-center space-x-2 transition-colors whitespace-nowrap">
         <span>🧮</span>
         <span>Title Simulator</span>
+      </button>
+      <button id="tabAnalyticsBtn" class="px-4 py-2.5 font-bold text-sm border-b-2 border-transparent text-zinc-400 hover:text-zinc-200 flex items-center space-x-2 transition-colors whitespace-nowrap">
+        <span>📊</span>
+        <span>Pit-Wall Analytics</span>
+      </button>
+      <button id="tabFanZoneBtn" class="px-4 py-2.5 font-bold text-sm border-b-2 border-transparent text-zinc-400 hover:text-zinc-200 flex items-center space-x-2 transition-colors whitespace-nowrap">
+        <span>🚦</span>
+        <span>Lights Out & Fan Zone</span>
+      </button>
+      <button id="tabShowroomBtn" class="px-4 py-2.5 font-bold text-sm border-b-2 border-transparent text-zinc-400 hover:text-zinc-200 flex items-center space-x-2 transition-colors whitespace-nowrap">
+        <span>🔧</span>
+        <span>Car Showroom</span>
       </button>
     </div>
 
@@ -1008,6 +1030,268 @@
       </section>
     </div>
 
+    <!-- SECTION 8: PIT-WALL ANALYTICS (Radar Chart, Pit Strategy, Points Progression) -->
+    <div id="analyticsView" class="hidden space-y-6">
+      <!-- Driver vs Driver Radar Comparison & Championship Momentum -->
+      <section class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <!-- Spider Radar Chart Card -->
+        <div class="lg:col-span-6 glass-panel border border-zinc-800 rounded-xl p-5 space-y-4 shadow-lg">
+          <div class="flex items-center justify-between border-b border-zinc-800 pb-3">
+            <div>
+              <h2 class="text-base font-bold text-white flex items-center gap-2">
+                <span>🕸️ Driver vs. Driver Career Radar</span>
+              </h2>
+              <p class="text-xs text-zinc-400">Overlapping 5-axis performance spider chart across eras</p>
+            </div>
+            <span class="text-[11px] font-mono px-2.5 py-0.5 rounded bg-red-500/10 text-red-400 border border-red-500/20">Pit-Wall Telemetry</span>
+          </div>
+
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label for="radarDriver1Select" class="block text-[11px] uppercase text-red-400 font-bold mb-1">Driver A (Red Line)</label>
+              <select id="radarDriver1Select" class="w-full bg-zinc-800 border border-zinc-700 text-white text-xs rounded-lg px-3 py-2">
+                <option value="verstappen" selected>Max Verstappen</option>
+                <option value="leclerc">Charles Leclerc</option>
+                <option value="hamilton">Lewis Hamilton</option>
+                <option value="norris">Lando Norris</option>
+                <option value="senna">Ayrton Senna</option>
+                <option value="schumacher">Michael Schumacher</option>
+                <option value="alonso">Fernando Alonso</option>
+              </select>
+            </div>
+            <div>
+              <label for="radarDriver2Select" class="block text-[11px] uppercase text-amber-400 font-bold mb-1">Driver B (Gold Line)</label>
+              <select id="radarDriver2Select" class="w-full bg-zinc-800 border border-zinc-700 text-white text-xs rounded-lg px-3 py-2">
+                <option value="verstappen">Max Verstappen</option>
+                <option value="leclerc" selected>Charles Leclerc</option>
+                <option value="hamilton">Lewis Hamilton</option>
+                <option value="norris">Lando Norris</option>
+                <option value="senna">Ayrton Senna</option>
+                <option value="schumacher">Michael Schumacher</option>
+                <option value="alonso">Fernando Alonso</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="bg-zinc-950/80 border border-zinc-800/80 rounded-xl p-4 flex items-center justify-center">
+            <svg id="radarSvg" viewBox="0 0 360 300" class="w-full max-w-[340px] h-auto"></svg>
+          </div>
+
+          <div id="radarMetricsSummary" class="grid grid-cols-5 gap-1.5 text-center text-[11px]"></div>
+        </div>
+
+        <!-- Championship Points Progression Graph Card -->
+        <div class="lg:col-span-6 glass-panel border border-zinc-800 rounded-xl p-5 space-y-4 shadow-lg flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between border-b border-zinc-800 pb-3">
+              <div>
+                <h2 class="text-base font-bold text-white flex items-center gap-2">
+                  <span>📈 Season Points Momentum Graph</span>
+                </h2>
+                <p class="text-xs text-zinc-400">Cumulative championship points trajectory from Round 1 to Finale</p>
+              </div>
+              <select id="momentumEraSelect" aria-label="Select Momentum Season" class="bg-zinc-800 border border-zinc-700 text-white text-xs rounded-lg px-2.5 py-1.5">
+                <option value="current">Current Grid Battle</option>
+                <option value="2021">2021 Classic (VER vs HAM)</option>
+                <option value="2016">2016 Silver War (ROS vs HAM)</option>
+              </select>
+            </div>
+
+            <div class="bg-zinc-950/80 border border-zinc-800/80 rounded-xl p-4 mt-4">
+              <svg id="progressionSvg" viewBox="0 0 500 260" class="w-full h-auto"></svg>
+            </div>
+          </div>
+
+          <div id="progressionLegend" class="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-zinc-800 text-xs"></div>
+        </div>
+      </section>
+
+      <!-- Pit Stop & Tyre Strategy Visualizer -->
+      <section class="glass-panel border border-zinc-800 rounded-xl p-5 space-y-4 shadow-lg">
+        <div class="flex flex-wrap items-center justify-between gap-3 border-b border-zinc-800 pb-3">
+          <div>
+            <h2 class="text-base font-bold text-white flex items-center gap-2">
+              <span>🛞 Pit Stop & Pirelli Tyre Stint Strategy Visualizer</span>
+            </h2>
+            <p class="text-xs text-zinc-400">Optimal 1-Stop vs. 2-Stop undercut windows and tyre compound life spans</p>
+          </div>
+          <div class="flex items-center space-x-2">
+            <label for="strategyTrackSelect" class="text-xs text-zinc-400 font-semibold">Circuit Profile:</label>
+            <select id="strategyTrackSelect" class="bg-zinc-800 border border-zinc-700 text-white text-xs rounded-lg px-3 py-1.5">
+              <option value="bahrain">Bahrain (57 Laps • High Deg)</option>
+              <option value="monaco">Monaco (78 Laps • Low Deg / Track Pos)</option>
+              <option value="silverstone">Silverstone (52 Laps • High Lateral Load)</option>
+              <option value="monza">Monza (53 Laps • Low Drag 1-Stop)</option>
+              <option value="spa">Spa-Francorchamps (44 Laps • Variable)</option>
+            </select>
+          </div>
+        </div>
+
+        <div id="strategyStintsContainer" class="space-y-4"></div>
+      </section>
+    </div>
+
+    <!-- SECTION 9: LIGHTS OUT REACTION GAME, PODIUM PREDICTOR & TRIVIA QUIZ -->
+    <div id="fanZoneView" class="hidden space-y-6">
+      <section class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <!-- Lights Out Reaction Time Game -->
+        <div class="lg:col-span-7 glass-panel border border-zinc-800 rounded-xl p-5 space-y-5 shadow-lg flex flex-col justify-between">
+          <div class="flex items-center justify-between border-b border-zinc-800 pb-3">
+            <div>
+              <h2 class="text-base font-bold text-white flex items-center gap-2">
+                <span>🚦 "Lights Out" F1 Start Reaction Challenge</span>
+              </h2>
+              <p class="text-xs text-zinc-400">Wait for all 5 red lights to illuminate, then tap immediately when they go OUT!</p>
+            </div>
+            <span id="bestReactionBadge" class="text-xs font-mono font-bold px-2.5 py-1 rounded bg-amber-500/20 text-amber-300 border border-amber-500/30">
+              Best: --.---s
+            </span>
+          </div>
+
+          <!-- 5 F1 Start Gantry Lights -->
+          <div class="bg-zinc-950 border-2 border-zinc-800 rounded-2xl p-6 flex flex-col items-center space-y-5 shadow-inner">
+            <div class="grid grid-cols-5 gap-3 sm:gap-5 bg-zinc-900 p-4 rounded-xl border border-zinc-800">
+              <div class="flex flex-col space-y-2 bg-zinc-950 p-2 rounded-lg border border-zinc-800">
+                <div id="gantryLight1Top" class="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-zinc-800 transition-colors"></div>
+                <div id="gantryLight1Bot" class="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-zinc-800 transition-colors"></div>
+              </div>
+              <div class="flex flex-col space-y-2 bg-zinc-950 p-2 rounded-lg border border-zinc-800">
+                <div id="gantryLight2Top" class="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-zinc-800 transition-colors"></div>
+                <div id="gantryLight2Bot" class="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-zinc-800 transition-colors"></div>
+              </div>
+              <div class="flex flex-col space-y-2 bg-zinc-950 p-2 rounded-lg border border-zinc-800">
+                <div id="gantryLight3Top" class="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-zinc-800 transition-colors"></div>
+                <div id="gantryLight3Bot" class="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-zinc-800 transition-colors"></div>
+              </div>
+              <div class="flex flex-col space-y-2 bg-zinc-950 p-2 rounded-lg border border-zinc-800">
+                <div id="gantryLight4Top" class="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-zinc-800 transition-colors"></div>
+                <div id="gantryLight4Bot" class="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-zinc-800 transition-colors"></div>
+              </div>
+              <div class="flex flex-col space-y-2 bg-zinc-950 p-2 rounded-lg border border-zinc-800">
+                <div id="gantryLight5Top" class="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-zinc-800 transition-colors"></div>
+                <div id="gantryLight5Bot" class="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-zinc-800 transition-colors"></div>
+              </div>
+            </div>
+
+            <div class="text-center space-y-1">
+              <div id="reactionTimeDisplay" class="text-4xl sm:text-5xl font-black font-mono text-white tracking-tight">0.000s</div>
+              <div id="reactionStatusText" class="text-xs font-semibold text-zinc-400">Tap the launch pad below to start sequence</div>
+            </div>
+
+            <button id="reactionPadBtn" class="w-full py-5 rounded-xl font-black text-base uppercase tracking-wider bg-red-600 hover:bg-red-500 text-white shadow-lg shadow-red-600/30 transition cursor-pointer select-none">
+              🏁 Tap to Start Sequence
+            </button>
+          </div>
+
+          <div class="grid grid-cols-3 gap-2 text-center text-[11px] text-zinc-400">
+            <div class="p-2 rounded bg-zinc-950/60 border border-zinc-800">
+              <span class="block text-white font-bold font-mono">0.180s – 0.210s</span>
+              F1 Pro Driver Reflex
+            </div>
+            <div class="p-2 rounded bg-zinc-950/60 border border-zinc-800">
+              <span class="block text-amber-400 font-bold font-mono">0.211s – 0.270s</span>
+              Midfield / F2 Grid
+            </div>
+            <div class="p-2 rounded bg-zinc-950/60 border border-zinc-800">
+              <span class="block text-red-400 font-bold font-mono">&lt; 0.100s</span>
+              Jump Start Penalty
+            </div>
+          </div>
+        </div>
+
+        <!-- F1 Trivia & Technical Quiz -->
+        <div class="lg:col-span-5 glass-panel border border-zinc-800 rounded-xl p-5 space-y-4 shadow-lg flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between border-b border-zinc-800 pb-3">
+              <div>
+                <h2 class="text-base font-bold text-white flex items-center gap-2">
+                  <span>🧠 F1 Pit-Wall Trivia Challenge</span>
+                </h2>
+                <p class="text-xs text-zinc-400">Test your Formula 1 history and engineering IQ</p>
+              </div>
+              <span id="triviaStreakBadge" class="text-xs font-mono font-bold px-2.5 py-1 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                Streak: 0 🔥
+              </span>
+            </div>
+
+            <div class="mt-4 space-y-3">
+              <div id="triviaQuestionBox" class="p-3.5 rounded-xl bg-zinc-950 border border-zinc-800 text-sm font-bold text-white leading-snug">
+                Loading question...
+              </div>
+              <div id="triviaOptionsBox" class="space-y-2"></div>
+              <div id="triviaFeedbackText" class="text-xs font-semibold min-h-[20px] text-zinc-400"></div>
+            </div>
+          </div>
+
+          <div class="pt-3 border-t border-zinc-800 flex items-center justify-between">
+            <span id="triviaScoreText" class="text-xs text-zinc-400 font-mono">Score: 0 / 0</span>
+            <button id="nextTriviaBtn" class="px-4 py-2 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-white text-xs font-bold transition cursor-pointer">
+              Next Question &rarr;
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Grand Prix Weekend Podium Predictor & Card Exporter -->
+      <section class="glass-panel border border-zinc-800 rounded-xl p-5 space-y-4 shadow-lg">
+        <div class="flex flex-wrap items-center justify-between gap-3 border-b border-zinc-800 pb-3">
+          <div>
+            <h2 class="text-base font-bold text-white flex items-center gap-2">
+              <span>🏆 Grand Prix Podium & Pole Predictor</span>
+            </h2>
+            <p class="text-xs text-zinc-400">Lock in your race weekend predictions and export an official prediction card for Instagram</p>
+          </div>
+          <div class="flex items-center space-x-2">
+            <button id="savePredictionBtn" class="px-3.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition cursor-pointer">
+              💾 Lock In Picks
+            </button>
+            <button id="exportPredictionCardBtn" class="px-3.5 py-1.5 rounded-lg bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white text-xs font-bold transition cursor-pointer">
+              📸 Export Prediction Card
+            </button>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-4 gap-3">
+          <div class="bg-zinc-950/70 border border-amber-500/40 rounded-xl p-3">
+            <label for="predP1Select" class="block text-[11px] font-bold uppercase text-amber-400 mb-1">🥇 P1 Race Winner</label>
+            <select id="predP1Select" class="w-full bg-zinc-900 border border-zinc-700 text-white text-xs rounded-lg px-2.5 py-2"></select>
+          </div>
+          <div class="bg-zinc-950/70 border border-zinc-700 rounded-xl p-3">
+            <label for="predP2Select" class="block text-[11px] font-bold uppercase text-zinc-300 mb-1">🥈 P2 Podium</label>
+            <select id="predP2Select" class="w-full bg-zinc-900 border border-zinc-700 text-white text-xs rounded-lg px-2.5 py-2"></select>
+          </div>
+          <div class="bg-zinc-950/70 border border-amber-700/40 rounded-xl p-3">
+            <label for="predP3Select" class="block text-[11px] font-bold uppercase text-amber-600 mb-1">🥉 P3 Podium</label>
+            <select id="predP3Select" class="w-full bg-zinc-900 border border-zinc-700 text-white text-xs rounded-lg px-2.5 py-2"></select>
+          </div>
+          <div class="bg-zinc-950/70 border border-purple-500/40 rounded-xl p-3">
+            <label for="predPoleSelect" class="block text-[11px] font-bold uppercase text-purple-400 mb-1">⏱️ Pole Position</label>
+            <select id="predPoleSelect" class="w-full bg-zinc-900 border border-zinc-700 text-white text-xs rounded-lg px-2.5 py-2"></select>
+          </div>
+        </div>
+        <div id="predictionSavedStatus" class="text-xs text-emerald-400 font-medium hidden">
+          ✅ Your weekend predictions are locked in! Click "Export Prediction Card" to share on Instagram.
+        </div>
+      </section>
+    </div>
+
+    <!-- SECTION 10: CONSTRUCTOR CAR SPECS & POWER UNIT SHOWROOM -->
+    <div id="showroomView" class="hidden space-y-6">
+      <section class="glass-panel border border-zinc-800 rounded-xl p-5 space-y-4 shadow-lg">
+        <div class="flex flex-wrap items-center justify-between gap-2 border-b border-zinc-800 pb-3">
+          <div>
+            <h2 class="text-base font-bold text-white flex items-center gap-2">
+              <span>🔧 Formula 1 Technical Showroom & Power Unit Specs</span>
+            </h2>
+            <p class="text-xs text-zinc-400">Chassis codes, hybrid V6 turbo power units, horsepower, weight, and aerodynamic concepts</p>
+          </div>
+          <span class="text-xs font-mono px-2.5 py-1 rounded bg-zinc-800 text-zinc-300 border border-zinc-700">1.6L V6 Turbo Hybrid • 1,000+ BHP</span>
+        </div>
+
+        <div id="showroomCardsGrid" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+      </section>
+    </div>
+
     <!-- Developer & Founder Profile Card (Below Results) -->
     <section class="bg-gradient-to-r from-zinc-900 via-zinc-900/90 to-red-950/40 border border-zinc-800 rounded-2xl p-5 sm:p-6 shadow-xl flex flex-col sm:flex-row items-center justify-between gap-5 my-6">
       <div class="flex items-center space-x-4">
@@ -1374,6 +1658,9 @@
     const tabCircuitBtn = document.getElementById("tabCircuitBtn");
     const tabLegendsBtn = document.getElementById("tabLegendsBtn");
     const tabSimulatorBtn = document.getElementById("tabSimulatorBtn");
+    const tabAnalyticsBtn = document.getElementById("tabAnalyticsBtn");
+    const tabFanZoneBtn = document.getElementById("tabFanZoneBtn");
+    const tabShowroomBtn = document.getElementById("tabShowroomBtn");
     const standingsView = document.getElementById("standingsView");
     const constructorsView = document.getElementById("constructorsView");
     const racesView = document.getElementById("racesView");
@@ -1381,6 +1668,9 @@
     const circuitView = document.getElementById("circuitView");
     const legendsView = document.getElementById("legendsView");
     const simulatorView = document.getElementById("simulatorView");
+    const analyticsView = document.getElementById("analyticsView");
+    const fanZoneView = document.getElementById("fanZoneView");
+    const showroomView = document.getElementById("showroomView");
 
     // DOM Elements - PWA
     const installBtn = document.getElementById("installBtn");
@@ -1733,6 +2023,9 @@
       tabCircuitBtn.className = tab === "circuit" ? activeClass : inactiveClass;
       tabLegendsBtn.className = tab === "legends" ? activeClass : inactiveClass;
       tabSimulatorBtn.className = tab === "simulator" ? activeClass : inactiveClass;
+      tabAnalyticsBtn.className = tab === "analytics" ? activeClass : inactiveClass;
+      tabFanZoneBtn.className = tab === "fanzone" ? activeClass : inactiveClass;
+      tabShowroomBtn.className = tab === "showroom" ? activeClass : inactiveClass;
 
       standingsView.classList.toggle("hidden", tab !== "standings");
       constructorsView.classList.toggle("hidden", tab !== "constructors");
@@ -1741,6 +2034,11 @@
       circuitView.classList.toggle("hidden", tab !== "circuit");
       legendsView.classList.toggle("hidden", tab !== "legends");
       simulatorView.classList.toggle("hidden", tab !== "simulator");
+      analyticsView.classList.toggle("hidden", tab !== "analytics");
+      fanZoneView.classList.toggle("hidden", tab !== "fanzone");
+      showroomView.classList.toggle("hidden", tab !== "showroom");
+
+      playTelemetryBeep(680, 0.04);
 
       if (tab === "constructors" && currentConstructors.length === 0) {
         loadConstructorData(currentSeason);
@@ -1764,6 +2062,19 @@
     tabCircuitBtn.addEventListener("click", () => switchTab("circuit"));
     tabLegendsBtn.addEventListener("click", () => switchTab("legends"));
     tabSimulatorBtn.addEventListener("click", () => switchTab("simulator"));
+    tabAnalyticsBtn.addEventListener("click", () => {
+      switchTab("analytics");
+      renderRadarChart();
+      renderProgressionChart();
+      renderPitStrategy();
+    });
+    tabFanZoneBtn.addEventListener("click", () => {
+      switchTab("fanzone");
+    });
+    tabShowroomBtn.addEventListener("click", () => {
+      switchTab("showroom");
+      renderShowroom();
+    });
 
     // Populate Season Dropdown dynamically up to the current year
     function populateSeasonDropdown() {
@@ -2676,6 +2987,560 @@
     renderStandings(currentStandings);
     loadSeasonData(new Date().getFullYear().toString());
     renderLegends("championships");
+
+    // =========================================================================
+    // NEW PREMIUM FEATURES: AUDIO SYNTH, RADAR, STRATEGY, LIGHTS OUT, TRIVIA, SHOWROOM
+    // =========================================================================
+
+    // 1. Web Audio API Telemetry & V10 Engine Sound Synthesizer
+    let audioEnabled = true;
+    let audioCtx = null;
+
+    function getAudioCtx() {
+      if (!audioCtx) {
+        const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+        if (AudioContextClass) audioCtx = new AudioContextClass();
+      }
+      if (audioCtx && audioCtx.state === "suspended") {
+        audioCtx.resume();
+      }
+      return audioCtx;
+    }
+
+    function playTelemetryBeep(freq = 800, duration = 0.06, type = "sine") {
+      if (!audioEnabled) return;
+      try {
+        const ctx = getAudioCtx();
+        if (!ctx) return;
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, ctx.currentTime);
+        gain.gain.setValueAtTime(0.08, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + duration);
+      } catch (e) {}
+    }
+
+    function playV10EngineRev() {
+      try {
+        const ctx = getAudioCtx();
+        if (!ctx) return;
+        const now = ctx.currentTime;
+        const osc1 = ctx.createOscillator();
+        const osc2 = ctx.createOscillator();
+        const gain = ctx.createGain();
+
+        osc1.type = "sawtooth";
+        osc2.type = "triangle";
+
+        // V10 harmonic rev up and downshift blip
+        osc1.frequency.setValueAtTime(180, now);
+        osc1.frequency.exponentialRampToValueAtTime(620, now + 0.45);
+        osc1.frequency.exponentialRampToValueAtTime(480, now + 0.6);
+        osc1.frequency.exponentialRampToValueAtTime(880, now + 1.1);
+        osc1.frequency.exponentialRampToValueAtTime(220, now + 1.45);
+
+        osc2.frequency.setValueAtTime(90, now);
+        osc2.frequency.exponentialRampToValueAtTime(310, now + 0.45);
+        osc2.frequency.exponentialRampToValueAtTime(440, now + 1.1);
+        osc2.frequency.exponentialRampToValueAtTime(110, now + 1.45);
+
+        gain.gain.setValueAtTime(0.01, now);
+        gain.gain.linearRampToValueAtTime(0.12, now + 0.2);
+        gain.gain.setValueAtTime(0.12, now + 1.1);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 1.5);
+
+        osc1.connect(gain);
+        osc2.connect(gain);
+        gain.connect(ctx.destination);
+
+        osc1.start(now);
+        osc2.start(now);
+        osc1.stop(now + 1.5);
+        osc2.stop(now + 1.5);
+      } catch (e) {}
+    }
+
+    const audioToggleBtn = document.getElementById("audioToggleBtn");
+    const audioIcon = document.getElementById("audioIcon");
+    const audioLabel = document.getElementById("audioLabel");
+    const revEngineBtn = document.getElementById("revEngineBtn");
+
+    audioToggleBtn.addEventListener("click", () => {
+      audioEnabled = !audioEnabled;
+      audioIcon.textContent = audioEnabled ? "🔊" : "🔇";
+      audioLabel.textContent = audioEnabled ? "FX On" : "Muted";
+      if (audioEnabled) playTelemetryBeep(920, 0.08);
+    });
+
+    revEngineBtn.addEventListener("click", () => {
+      playV10EngineRev();
+    });
+
+    // 2. Driver vs Driver Radar Spider Chart
+    const radarProfiles = {
+      "verstappen": { name: "Max Verstappen", stats: [98, 95, 97, 96, 94], desc: "Relentless race pace & wet-weather mastery" },
+      "leclerc": { name: "Charles Leclerc", stats: [91, 99, 92, 95, 89], desc: " generational one-lap qualifying speed" },
+      "hamilton": { name: "Lewis Hamilton", stats: [97, 97, 96, 94, 99], desc: "7-time champion tyre management & racecraft" },
+      "norris": { name: "Lando Norris", stats: [92, 95, 94, 92, 93], desc: "High-speed corner commitment & consistency" },
+      "senna": { name: "Ayrton Senna", stats: [96, 100, 95, 98, 92], desc: "Unmatched qualifying intensity & wet control" },
+      "schumacher": { name: "Michael Schumacher", stats: [98, 96, 97, 96, 96], desc: " qualifying-style stints & tactical dominance" },
+      "alonso": { name: "Fernando Alonso", stats: [94, 92, 95, 99, 98], desc: "Wheel-to-wheel racecraft & race intelligence" }
+    };
+    const radarLabels = ["Race Pace", "Qualifying", "Consistency", "Overtaking", "Tyre Mgmt"];
+
+    const radarDriver1Select = document.getElementById("radarDriver1Select");
+    const radarDriver2Select = document.getElementById("radarDriver2Select");
+    const radarSvg = document.getElementById("radarSvg");
+    const radarMetricsSummary = document.getElementById("radarMetricsSummary");
+
+    function renderRadarChart() {
+      const d1 = radarProfiles[radarDriver1Select.value] || radarProfiles["verstappen"];
+      const d2 = radarProfiles[radarDriver2Select.value] || radarProfiles["leclerc"];
+      const cx = 180, cy = 155, maxR = 105;
+
+      function polarToXY(angleIdx, val) {
+        const angle = (Math.PI * 2 * angleIdx) / 5 - Math.PI / 2;
+        const r = (val / 100) * maxR;
+        return [cx + r * Math.cos(angle), cy + r * Math.sin(angle)];
+      }
+
+      let gridHtml = "";
+      [25, 50, 75, 100].forEach(level => {
+        const pts = [0, 1, 2, 3, 4].map(i => polarToXY(i, level).join(",")).join(" ");
+        gridHtml += `<polygon points="${pts}" fill="none" stroke="#27272a" stroke-width="1" />`;
+      });
+
+      let axesHtml = "";
+      radarLabels.forEach((lbl, i) => {
+        const [ex, ey] = polarToXY(i, 100);
+        const [lx, ly] = polarToXY(i, 122);
+        axesHtml += `<line x1="${cx}" y1="${cy}" x2="${ex}" y2="${ey}" stroke="#3f3f46" stroke-width="1" />`;
+        axesHtml += `<text x="${lx}" y="${ly}" fill="#d4d4d8" font-size="10" font-weight="bold" text-anchor="middle" dominant-baseline="middle">${lbl}</text>`;
+      });
+
+      const poly1 = d1.stats.map((v, i) => polarToXY(i, v).join(",")).join(" ");
+      const poly2 = d2.stats.map((v, i) => polarToXY(i, v).join(",")).join(" ");
+
+      radarSvg.innerHTML = `
+        ${gridHtml}
+        ${axesHtml}
+        <polygon points="${poly2}" fill="rgba(245, 158, 11, 0.22)" stroke="#f59e0b" stroke-width="2.5" />
+        <polygon points="${poly1}" fill="rgba(239, 68, 68, 0.25)" stroke="#ef4444" stroke-width="2.5" />
+      `;
+
+      radarMetricsSummary.innerHTML = radarLabels.map((lbl, i) => `
+        <div class="bg-zinc-950/70 border border-zinc-800 rounded p-1.5">
+          <div class="text-[9px] text-zinc-500 uppercase truncate">${lbl}</div>
+          <div class="font-mono font-bold">
+            <span class="text-red-400">${d1.stats[i]}</span>
+            <span class="text-zinc-600">/</span>
+            <span class="text-amber-400">${d2.stats[i]}</span>
+          </div>
+        </div>
+      `).join("");
+    }
+
+    radarDriver1Select.addEventListener("change", () => { playTelemetryBeep(740, 0.05); renderRadarChart(); });
+    radarDriver2Select.addEventListener("change", () => { playTelemetryBeep(820, 0.05); renderRadarChart(); });
+
+    // 3. Season Points Momentum Graph
+    const momentumDatasets = {
+      "current": [
+        { name: "Verstappen", color: "#3b82f6", pts: [26, 51, 77, 110, 136, 169, 219, 255, 295, 331, 393, 437] },
+        { name: "Norris", color: "#f97316", pts: [8, 27, 58, 83, 113, 150, 171, 199, 241, 279, 331, 374] },
+        { name: "Leclerc", color: "#ef4444", pts: [12, 47, 76, 98, 138, 148, 162, 177, 217, 245, 307, 356] }
+      ],
+      "2021": [
+        { name: "Verstappen", color: "#3b82f6", pts: [18, 43, 80, 105, 131, 182, 187, 224.5, 262.5, 312.5, 369.5, 395.5] },
+        { name: "Hamilton", color: "#14b8a6", pts: [25, 44, 69, 101, 119, 150, 195, 221.5, 256.5, 293.5, 369.5, 387.5] }
+      ],
+      "2016": [
+        { name: "Rosberg", color: "#facc15", pts: [25, 50, 100, 106, 141, 168, 198, 223, 273, 313, 349, 385] },
+        { name: "Hamilton", color: "#14b8a6", pts: [18, 33, 57, 82, 117, 167, 217, 232, 265, 280, 330, 380] }
+      ]
+    };
+
+    const momentumEraSelect = document.getElementById("momentumEraSelect");
+    const progressionSvg = document.getElementById("progressionSvg");
+    const progressionLegend = document.getElementById("progressionLegend");
+
+    function renderProgressionChart() {
+      const series = momentumDatasets[momentumEraSelect.value] || momentumDatasets["current"];
+      const padL = 42, padR = 20, padT = 20, padB = 30;
+      const w = 500 - padL - padR;
+      const h = 260 - padT - padB;
+      const maxPts = 450;
+
+      let gridHtml = "";
+      [0, 150, 300, 450].forEach(val => {
+        const y = padT + h - (val / maxPts) * h;
+        gridHtml += `<line x1="${padL}" y1="${y}" x2="${500 - padR}" y2="${y}" stroke="#27272a" stroke-width="1" />`;
+        gridHtml += `<text x="${padL - 8}" y="${y + 3}" fill="#71717a" font-size="10" font-family="monospace" text-anchor="end">${val}</text>`;
+      });
+
+      let linesHtml = "";
+      series.forEach(s => {
+        const coords = s.pts.map((p, idx) => {
+          const x = padL + (idx / (s.pts.length - 1)) * w;
+          const y = padT + h - (p / maxPts) * h;
+          return `${x},${y}`;
+        }).join(" ");
+        linesHtml += `<polyline fill="none" stroke="${s.color}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" points="${coords}" />`;
+        s.pts.forEach((p, idx) => {
+          const x = padL + (idx / (s.pts.length - 1)) * w;
+          const y = padT + h - (p / maxPts) * h;
+          linesHtml += `<circle cx="${x}" cy="${y}" r="3.5" fill="${s.color}" />`;
+        });
+      });
+
+      progressionSvg.innerHTML = `${gridHtml}${linesHtml}`;
+      progressionLegend.innerHTML = series.map(s => `
+        <div class="flex items-center space-x-2">
+          <span class="w-3 h-3 rounded-full inline-block" style="background-color: ${s.color}"></span>
+          <span class="font-bold text-white">${s.name}</span>
+          <span class="font-mono text-zinc-400">(${s.pts[s.pts.length - 1]} PTS)</span>
+        </div>
+      `).join("");
+    }
+
+    momentumEraSelect.addEventListener("change", () => { playTelemetryBeep(760, 0.05); renderProgressionChart(); });
+
+    // 4. Pit Stop & Tyre Strategy Visualizer
+    const pitStrategies = {
+      "bahrain": [
+        { label: "Optimal 2-Stop Undercut (Fastest)", pitLoss: "22.8s", stints: [{ c: "Soft", cls: "bg-red-500", pct: 28, laps: "L1–16" }, { c: "Hard", cls: "bg-zinc-200 text-zinc-900", pct: 39, laps: "L17–39" }, { c: "Soft", cls: "bg-red-500", pct: 33, laps: "L40–57" }] },
+        { label: "Alternative 2-Stop Conservative", pitLoss: "22.8s", stints: [{ c: "Soft", cls: "bg-red-500", pct: 26, laps: "L1–15" }, { c: "Hard", cls: "bg-zinc-200 text-zinc-900", pct: 37, laps: "L16–36" }, { c: "Hard", cls: "bg-zinc-200 text-zinc-900", pct: 37, laps: "L37–57" }] }
+      ],
+      "monaco": [
+        { label: "Standard 1-Stop Track Position", pitLoss: "19.4s", stints: [{ c: "Medium", cls: "bg-amber-400 text-zinc-950", pct: 42, laps: "L1–33" }, { c: "Hard", cls: "bg-zinc-200 text-zinc-900", pct: 58, laps: "L34–78" }] },
+        { label: "Overcut Long First Stint", pitLoss: "19.4s", stints: [{ c: "Hard", cls: "bg-zinc-200 text-zinc-900", pct: 64, laps: "L1–50" }, { c: "Medium", cls: "bg-amber-400 text-zinc-950", pct: 36, laps: "L51–78" }] }
+      ],
+      "silverstone": [
+        { label: "1-Stop Medium to Hard", pitLoss: "20.1s", stints: [{ c: "Medium", cls: "bg-amber-400 text-zinc-950", pct: 38, laps: "L1–20" }, { c: "Hard", cls: "bg-zinc-200 text-zinc-900", pct: 62, laps: "L21–52" }] },
+        { label: "Aggressive 2-Stop Attack", pitLoss: "20.1s", stints: [{ c: "Soft", cls: "bg-red-500", pct: 27, laps: "L1–14" }, { c: "Medium", cls: "bg-amber-400 text-zinc-950", pct: 38, laps: "L15–34" }, { c: "Soft", cls: "bg-red-500", pct: 35, laps: "L35–52" }] }
+      ],
+      "monza": [
+        { label: "Temple of Speed 1-Stop", pitLoss: "24.2s", stints: [{ c: "Medium", cls: "bg-amber-400 text-zinc-950", pct: 41, laps: "L1–22" }, { c: "Hard", cls: "bg-zinc-200 text-zinc-900", pct: 59, laps: "L23–53" }] },
+        { label: "2-Stop High Pace Split", pitLoss: "24.2s", stints: [{ c: "Medium", cls: "bg-amber-400 text-zinc-950", pct: 32, laps: "L1–17" }, { c: "Hard", cls: "bg-zinc-200 text-zinc-900", pct: 36, laps: "L18–36" }, { c: "Hard", cls: "bg-zinc-200 text-zinc-900", pct: 32, laps: "L37–53" }] }
+      ],
+      "spa": [
+        { label: "2-Stop Ardennes Attack", pitLoss: "18.8s", stints: [{ c: "Soft", cls: "bg-red-500", pct: 30, laps: "L1–13" }, { c: "Medium", cls: "bg-amber-400 text-zinc-950", pct: 38, laps: "L14–30" }, { c: "Medium", cls: "bg-amber-400 text-zinc-950", pct: 32, laps: "L31–44" }] },
+        { label: "1-Stop Tyre Whisperer", pitLoss: "18.8s", stints: [{ c: "Medium", cls: "bg-amber-400 text-zinc-950", pct: 36, laps: "L1–16" }, { c: "Hard", cls: "bg-zinc-200 text-zinc-900", pct: 64, laps: "L17–44" }] }
+      ]
+    };
+
+    const strategyTrackSelect = document.getElementById("strategyTrackSelect");
+    const strategyStintsContainer = document.getElementById("strategyStintsContainer");
+
+    function renderPitStrategy() {
+      const plans = pitStrategies[strategyTrackSelect.value] || pitStrategies["bahrain"];
+      strategyStintsContainer.innerHTML = plans.map(p => `
+        <div class="bg-zinc-950/70 border border-zinc-800 rounded-xl p-4 space-y-2">
+          <div class="flex items-center justify-between text-xs">
+            <span class="font-bold text-white">${p.label}</span>
+            <span class="font-mono text-zinc-400">Avg Pit Lane Loss: <strong class="text-emerald-400">${p.pitLoss}</strong></span>
+          </div>
+          <div class="w-full h-7 rounded-lg overflow-hidden flex gap-1">
+            ${p.stints.map(s => `
+              <div style="width: ${s.pct}%" class="${s.cls} font-bold text-xs flex items-center justify-between px-3 truncate">
+                <span>${s.c}</span>
+                <span class="font-mono text-[10px] opacity-80">${s.laps}</span>
+              </div>
+            `).join("")}
+          </div>
+        </div>
+      `).join("");
+    }
+
+    strategyTrackSelect.addEventListener("change", () => { playTelemetryBeep(790, 0.05); renderPitStrategy(); });
+
+    // 5. "Lights Out" F1 Start Reaction Challenge
+    const reactionPadBtn = document.getElementById("reactionPadBtn");
+    const reactionTimeDisplay = document.getElementById("reactionTimeDisplay");
+    const reactionStatusText = document.getElementById("reactionStatusText");
+    const bestReactionBadge = document.getElementById("bestReactionBadge");
+
+    let reactionState = "idle"; // idle, sequence, waitingForGreen, readyToTap
+    let lightTimers = [];
+    let greenTimestamp = 0;
+    let bestReaction = null;
+
+    function setGantryColumn(colIdx, on) {
+      const top = document.getElementById(`gantryLight${colIdx}Top`);
+      const bot = document.getElementById(`gantryLight${colIdx}Bot`);
+      const cls = on
+        ? "w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-red-600 shadow-lg shadow-red-600/80 transition-colors"
+        : "w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-zinc-800 transition-colors";
+      if (top) top.className = cls;
+      if (bot) bot.className = cls;
+    }
+
+    function clearGantryTimers() {
+      lightTimers.forEach(t => clearTimeout(t));
+      lightTimers = [];
+      for (let i = 1; i <= 5; i++) setGantryColumn(i, false);
+    }
+
+    reactionPadBtn.addEventListener("click", () => {
+      if (reactionState === "idle") {
+        clearGantryTimers();
+        reactionState = "sequence";
+        reactionTimeDisplay.textContent = "0.000s";
+        reactionStatusText.textContent = "Hold steady... Wait for all 5 lights to go OUT!";
+        reactionPadBtn.textContent = "⏳ Wait for Lights Out...";
+        reactionPadBtn.className = "w-full py-5 rounded-xl font-black text-base uppercase tracking-wider bg-amber-600 text-white shadow-lg transition cursor-pointer select-none";
+
+        for (let i = 1; i <= 5; i++) {
+          const t = setTimeout(() => {
+            setGantryColumn(i, true);
+            playTelemetryBeep(440, 0.12, "square");
+          }, i * 750);
+          lightTimers.push(t);
+        }
+
+        const randomDelay = 5 * 750 + 900 + Math.random() * 2400;
+        const goTimer = setTimeout(() => {
+          for (let i = 1; i <= 5; i++) setGantryColumn(i, false);
+          playTelemetryBeep(880, 0.18, "sawtooth");
+          greenTimestamp = performance.now();
+          reactionState = "readyToTap";
+          reactionStatusText.textContent = "LIGHTS OUT! TAP NOW!";
+          reactionPadBtn.textContent = "🟢 TAP NOW! LIGHTS OUT!";
+          reactionPadBtn.className = "w-full py-5 rounded-xl font-black text-base uppercase tracking-wider bg-emerald-600 text-white shadow-lg transition cursor-pointer select-none";
+        }, randomDelay);
+        lightTimers.push(goTimer);
+
+      } else if (reactionState === "sequence") {
+        // Jump start!
+        clearGantryTimers();
+        playTelemetryBeep(200, 0.35, "sawtooth");
+        reactionState = "idle";
+        reactionTimeDisplay.textContent = "JUMP START!";
+        reactionStatusText.textContent = "⚠️ Drive-Through Penalty! You tapped before the lights went out.";
+        reactionPadBtn.textContent = "🔄 Try Again";
+        reactionPadBtn.className = "w-full py-5 rounded-xl font-black text-base uppercase tracking-wider bg-red-600 hover:bg-red-500 text-white shadow-lg transition cursor-pointer select-none";
+
+      } else if (reactionState === "readyToTap") {
+        const elapsedSec = (performance.now() - greenTimestamp) / 1000;
+        reactionState = "idle";
+        const formatted = elapsedSec.toFixed(3);
+        reactionTimeDisplay.textContent = `${formatted}s`;
+        playTelemetryBeep(1040, 0.12, "sine");
+
+        if (bestReaction === null || elapsedSec < bestReaction) {
+          bestReaction = elapsedSec;
+          bestReactionBadge.textContent = `Best: ${formatted}s`;
+        }
+
+        if (elapsedSec < 0.215) {
+          reactionStatusText.textContent = `⚡ Incredible! Pole-worthy F1 driver reflex (${formatted}s)!`;
+        } else if (elapsedSec < 0.280) {
+          reactionStatusText.textContent = `🏎️ Solid midfield launch (${formatted}s)!`;
+        } else {
+          reactionStatusText.textContent = `🐢 Wheelspin off the line (${formatted}s). Try again!`;
+        }
+        reactionPadBtn.textContent = "🏁 Play Again";
+        reactionPadBtn.className = "w-full py-5 rounded-xl font-black text-base uppercase tracking-wider bg-red-600 hover:bg-red-500 text-white shadow-lg transition cursor-pointer select-none";
+      }
+    });
+
+    // 6. F1 Pit-Wall Trivia Quiz
+    const triviaQuestions = [
+      { q: "Which circuit hosted the very first Formula 1 World Championship race in May 1950?", opts: ["Monza", "Silverstone", "Spa-Francorchamps", "Monaco"], a: 1 },
+      { q: "Who holds the record for the most consecutive Grand Prix victories in a single season (10 in a row)?", opts: ["Sebastian Vettel", "Michael Schumacher", "Max Verstappen", "Lewis Hamilton"], a: 2 },
+      { q: "What is the minimum weight of a Formula 1 car (including the driver, without fuel) under modern technical rules?", opts: ["695 kg", "740 kg", "798 kg", "850 kg"], a: 2 },
+      { q: "Which constructor has won the most Formula 1 Constructors' World Championships (16 titles)?", opts: ["McLaren", "Williams", "Mercedes", "Ferrari"], a: 3 },
+      { q: "Which driver won the 2007 Formula 1 World Drivers' Championship by just 1 point for Scuderia Ferrari?", opts: ["Kimi Räikkönen", "Felipe Massa", "Fernando Alonso", "Michael Schumacher"], a: 0 },
+      { q: "What does DRS stand for in Formula 1 aerodynamics?", opts: ["Downforce Reduction System", "Drag Reduction System", "Dynamic Rear Spoiler", "Dual Rear Wing System"], a: 1 }
+    ];
+
+    let triviaIdx = 0;
+    let triviaScore = 0;
+    let triviaAttempted = 0;
+    let triviaStreak = 0;
+    let triviaAnsweredCurrent = false;
+
+    const triviaQuestionBox = document.getElementById("triviaQuestionBox");
+    const triviaOptionsBox = document.getElementById("triviaOptionsBox");
+    const triviaFeedbackText = document.getElementById("triviaFeedbackText");
+    const triviaScoreText = document.getElementById("triviaScoreText");
+    const triviaStreakBadge = document.getElementById("triviaStreakBadge");
+    const nextTriviaBtn = document.getElementById("nextTriviaBtn");
+
+    function renderTriviaQuestion() {
+      const item = triviaQuestions[triviaIdx % triviaQuestions.length];
+      triviaAnsweredCurrent = false;
+      triviaQuestionBox.textContent = item.q;
+      triviaFeedbackText.textContent = "Select an answer above";
+      triviaFeedbackText.className = "text-xs font-semibold min-h-[20px] text-zinc-400";
+      triviaOptionsBox.innerHTML = "";
+
+      item.opts.forEach((optText, i) => {
+        const btn = document.createElement("button");
+        btn.className = "w-full text-left px-3.5 py-2.5 rounded-lg bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 text-xs font-medium text-zinc-200 transition cursor-pointer";
+        btn.textContent = optText;
+        btn.addEventListener("click", () => {
+          if (triviaAnsweredCurrent) return;
+          triviaAnsweredCurrent = true;
+          triviaAttempted++;
+          if (i === item.a) {
+            triviaScore++;
+            triviaStreak++;
+            btn.className = "w-full text-left px-3.5 py-2.5 rounded-lg bg-emerald-500/20 border border-emerald-500 text-xs font-bold text-emerald-300";
+            triviaFeedbackText.textContent = "✅ Correct! Box, box for purple sectors!";
+            triviaFeedbackText.className = "text-xs font-bold min-h-[20px] text-emerald-400";
+            playTelemetryBeep(960, 0.1, "sine");
+          } else {
+            triviaStreak = 0;
+            btn.className = "w-full text-left px-3.5 py-2.5 rounded-lg bg-red-500/20 border border-red-500 text-xs font-bold text-red-300";
+            triviaFeedbackText.textContent = `❌ Incorrect! Correct answer: ${item.opts[item.a]}`;
+            triviaFeedbackText.className = "text-xs font-bold min-h-[20px] text-red-400";
+            playTelemetryBeep(280, 0.15, "sawtooth");
+          }
+          triviaScoreText.textContent = `Score: ${triviaScore} / ${triviaAttempted}`;
+          triviaStreakBadge.textContent = `Streak: ${triviaStreak} 🔥`;
+        });
+        triviaOptionsBox.appendChild(btn);
+      });
+    }
+
+    nextTriviaBtn.addEventListener("click", () => {
+      triviaIdx++;
+      renderTriviaQuestion();
+    });
+
+    // 7. Grand Prix Podium Predictor
+    const predictorDrivers = [
+      "Max Verstappen (Red Bull)", "Charles Leclerc (Ferrari)", "Lando Norris (McLaren)",
+      "Lewis Hamilton (Ferrari)", "Oscar Piastri (McLaren)", "Carlos Sainz (Williams)",
+      "George Russell (Mercedes)", "Fernando Alonso (Aston Martin)", "Pierre Gasly (Alpine)"
+    ];
+    const predP1Select = document.getElementById("predP1Select");
+    const predP2Select = document.getElementById("predP2Select");
+    const predP3Select = document.getElementById("predP3Select");
+    const predPoleSelect = document.getElementById("predPoleSelect");
+    const savePredictionBtn = document.getElementById("savePredictionBtn");
+    const exportPredictionCardBtn = document.getElementById("exportPredictionCardBtn");
+    const predictionSavedStatus = document.getElementById("predictionSavedStatus");
+
+    function initPredictorDropdowns() {
+      [predP1Select, predP2Select, predP3Select, predPoleSelect].forEach((sel, idx) => {
+        sel.innerHTML = predictorDrivers.map(d => `<option value="${d}">${d}</option>`).join("");
+        sel.selectedIndex = idx % predictorDrivers.length;
+      });
+    }
+
+    savePredictionBtn.addEventListener("click", () => {
+      playTelemetryBeep(880, 0.08);
+      predictionSavedStatus.classList.remove("hidden");
+    });
+
+    exportPredictionCardBtn.addEventListener("click", () => {
+      const canvas = document.createElement("canvas");
+      canvas.width = 1080;
+      canvas.height = 1920;
+      const ctx = canvas.getContext("2d");
+
+      const grad = ctx.createLinearGradient(0, 0, 1080, 1920);
+      grad.addColorStop(0, "#09090b");
+      grad.addColorStop(0.5, "#18181b");
+      grad.addColorStop(1, "#3b0764");
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, 1080, 1920);
+
+      ctx.fillStyle = "#dc2626";
+      ctx.fillRect(80, 120, 260, 80);
+      ctx.fillStyle = "#ffffff";
+      ctx.font = "900 48px sans-serif";
+      ctx.fillText("F1 NOW", 110, 178);
+
+      ctx.font = "bold 44px sans-serif";
+      ctx.fillStyle = "#f472b6";
+      ctx.fillText("OFFICIAL RACE WEEKEND PREDICTIONS", 80, 290);
+
+      const picks = [
+        { label: "P1 RACE WINNER", val: predP1Select.value, col: "#fbbf24" },
+        { label: "P2 PODIUM", val: predP2Select.value, col: "#e4e4e7" },
+        { label: "P3 PODIUM", val: predP3Select.value, col: "#d97706" },
+        { label: "POLE POSITION", val: predPoleSelect.value, col: "#c084fc" }
+      ];
+
+      picks.forEach((p, i) => {
+        const y = 380 + i * 300;
+        ctx.fillStyle = "rgba(39, 39, 42, 0.9)";
+        ctx.fillRect(80, y, 920, 240);
+        ctx.fillStyle = p.col;
+        ctx.fillRect(80, y, 16, 240);
+        ctx.font = "bold 34px monospace";
+        ctx.fillText(p.label, 130, y + 85);
+        ctx.fillStyle = "#ffffff";
+        ctx.font = "900 50px sans-serif";
+        ctx.fillText(p.val, 130, y + 170);
+      });
+
+      ctx.fillStyle = "#f472b6";
+      ctx.font = "bold 42px sans-serif";
+      ctx.fillText("Founded & Developed by @forza_ferrari_15", 80, 1740);
+      ctx.fillStyle = "#71717a";
+      ctx.font = "32px sans-serif";
+      ctx.fillText("f1now.github.io/f1-now", 80, 1800);
+
+      const link = document.createElement("a");
+      link.download = "F1Now_My_Podium_Predictions.png";
+      link.href = canvas.toDataURL("image/png");
+      link.click();
+
+      storyToast.classList.remove("hidden");
+      setTimeout(() => storyToast.classList.add("hidden"), 4000);
+    });
+
+    // 8. Constructor Car Specs & Power Unit Showroom
+    const showroomSpecs = [
+      { team: "Scuderia Ferrari", chassis: "SF-26", pu: "Ferrari 066/12 1.6L V6 Turbo Hybrid", hp: "1,050+ BHP", weight: "798 kg", aero: "In-wash sidepod undercut & pull-rod front suspension", hex: "#dc2626" },
+      { team: "McLaren Formula 1 Team", chassis: "MCL39", pu: "Mercedes-AMG F1 M16 E Performance", hp: "1,045+ BHP", weight: "798 kg", aero: "High-efficiency downwash beam wing & low-drag floor", hex: "#f97316" },
+      { team: "Oracle Red Bull Racing", chassis: "RB22", pu: "Honda RBPT RBPTH003 Hybrid", hp: "1,050+ BHP", weight: "798 kg", aero: "Aggressive venturi floor tunnels & high-rake aero stability", hex: "#2563eb" },
+      { team: "Mercedes-AMG Petronas", chassis: "F1 W17", pu: "Mercedes-AMG F1 M16 E Performance", hp: "1,045+ BHP", weight: "798 kg", aero: "Push-rod rear suspension & sculpted sidepod gulley", hex: "#14b8a6" },
+      { team: "Aston Martin Aramco", chassis: "AMR26", pu: "Honda / Mercedes Hybrid Power Unit", hp: "1,035+ BHP", weight: "798 kg", aero: "Deep waterslide sidepod channels & high-downforce trim", hex: "#059669" },
+      { team: "Williams Racing", chassis: "FW48", pu: "Mercedes-AMG F1 M16 E Performance", hp: "1,040+ BHP", weight: "798 kg", aero: "Ultra-low drag straight-line efficiency package", hex: "#38bdf8" }
+    ];
+
+    const showroomCardsGrid = document.getElementById("showroomCardsGrid");
+    function renderShowroom() {
+      showroomCardsGrid.innerHTML = showroomSpecs.map(car => `
+        <div class="bg-zinc-950/80 border border-zinc-800 rounded-xl p-5 space-y-3" style="border-left: 5px solid ${car.hex}">
+          <div class="flex items-center justify-between">
+            <h3 class="text-base font-black text-white">${car.team}</h3>
+            <span class="px-2.5 py-0.5 rounded font-mono font-bold text-xs bg-zinc-900 text-amber-400 border border-zinc-700">Chassis: ${car.chassis}</span>
+          </div>
+          <div class="grid grid-cols-2 gap-2 text-xs">
+            <div class="p-2.5 rounded bg-zinc-900/70 border border-zinc-800/80">
+              <span class="text-zinc-500 block text-[10px] uppercase">Power Unit</span>
+              <span class="text-zinc-200 font-semibold">${car.pu}</span>
+            </div>
+            <div class="p-2.5 rounded bg-zinc-900/70 border border-zinc-800/80">
+              <span class="text-zinc-500 block text-[10px] uppercase">Output & Weight</span>
+              <span class="text-emerald-400 font-mono font-bold">${car.hp} • ${car.weight}</span>
+            </div>
+          </div>
+          <div class="text-xs text-zinc-400">
+            <strong class="text-zinc-300">Aero Concept:</strong> ${car.aero}
+          </div>
+        </div>
+      `).join("");
+    }
+
+    // Initialize new modules
+    renderRadarChart();
+    renderProgressionChart();
+    renderPitStrategy();
+    renderTriviaQuestion();
+    initPredictorDropdowns();
+    renderShowroom();
   </script>
 </body>
 </html>
