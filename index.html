@@ -1103,7 +1103,7 @@
     // State
     let currentStandings = [];
     let currentConstructors = [];
-    let currentSeason = "2024";
+    let currentSeason = new Date().getFullYear().toString();
     let currentSeasonRaces = [];
     let currentRaceResults = [];
     let currentQualiResults = [];
@@ -1304,18 +1304,18 @@
     tabCircuitBtn.addEventListener("click", () => switchTab("circuit"));
     tabLegendsBtn.addEventListener("click", () => switchTab("legends"));
 
-    // Populate Season Dropdown
+    // Populate Season Dropdown dynamically up to the current year
     function populateSeasonDropdown() {
       const startYear = 1950;
-      const endYear = 2024;
+      const currentYear = new Date().getFullYear();
       seasonSelect.innerHTML = "";
-      for (let y = endYear; y >= startYear; y--) {
+      for (let y = currentYear; y >= startYear; y--) {
         const opt = document.createElement("option");
         opt.value = y.toString();
-        opt.textContent = `${y} Season` + (y === 2024 ? " (Latest Full Season)" : "");
+        opt.textContent = `${y} Season` + (y === currentYear ? " (Current Season)" : "");
         seasonSelect.appendChild(opt);
       }
-      seasonSelect.value = "2024";
+      seasonSelect.value = currentYear.toString();
     }
 
     // Initialize Circuit Catalog
@@ -2128,7 +2128,7 @@
     populateCircuitDropdown();
     currentStandings = fallback2024;
     renderStandings(currentStandings);
-    loadSeasonData("2024");
+    loadSeasonData(new Date().getFullYear().toString());
     renderLegends("championships");
   </script>
 </body>
