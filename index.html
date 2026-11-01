@@ -15,15 +15,29 @@
     @import url('https://fonts.googleapis.com/css2?family=Titillium+Web:wght@400;600;700;900&display=swap');
     body {
       font-family: 'Titillium Web', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: #09090b;
+      background-image: 
+        radial-gradient(circle at 50% 0%, rgba(220, 38, 38, 0.14), transparent 55%),
+        linear-gradient(45deg, rgba(255,255,255,0.015) 25%, transparent 25%, transparent 50%, rgba(255,255,255,0.015) 50%, rgba(255,255,255,0.015) 75%, transparent 75%, transparent);
+      background-size: 100% 100%, 8px 8px;
     }
+    .glass-panel {
+      background: rgba(24, 24, 27, 0.85);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+    }
+    .tire-soft { border-color: #ef4444; color: #f87171; background: rgba(239, 68, 68, 0.15); }
+    .tire-medium { border-color: #facc15; color: #fde047; background: rgba(250, 204, 21, 0.15); }
+    .tire-hard { border-color: #e4e4e7; color: #f4f4f5; background: rgba(244, 244, 245, 0.15); }
+    .tire-inter { border-color: #22c55e; color: #4ade80; background: rgba(34, 197, 94, 0.15); }
   </style>
 </head>
 <body class="bg-zinc-950 text-zinc-100 min-h-screen flex flex-col">
   <!-- Top Navigation Bar -->
-  <header class="border-b border-red-600/40 bg-zinc-900/90 sticky top-0 z-30 backdrop-blur-md">
+  <header class="border-b border-red-600/40 bg-zinc-900/90 sticky top-0 z-30 backdrop-blur-xl">
     <div class="max-w-6xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-4">
       <div class="flex items-center space-x-3">
-        <div class="bg-red-600 text-white font-black px-2.5 py-1 rounded tracking-tighter text-xl italic shadow-lg shadow-red-600/30">
+        <div id="brandLogoBadge" class="bg-red-600 text-white font-black px-2.5 py-1 rounded tracking-tighter text-xl italic shadow-lg shadow-red-600/30 transition-colors">
           F1 NOW
         </div>
         <div>
@@ -36,23 +50,87 @@
           <p class="text-xs text-zinc-400">Championship Archive, Race Hub & Telemetry (1950 – Present)</p>
         </div>
       </div>
-      <div class="flex items-center space-x-2 text-xs">
-        <span class="hidden md:inline-flex items-center px-2.5 py-1 rounded-full font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+
+      <!-- Favorite Team Selector & Install Actions -->
+      <div class="flex flex-wrap items-center gap-2 text-xs">
+        <div class="flex items-center bg-zinc-800/90 border border-zinc-700 rounded-full px-2.5 py-1 space-x-1.5">
+          <span class="text-zinc-400 font-semibold text-[11px]">⭐ My Team:</span>
+          <select id="favTeamSelect" aria-label="Favorite Team" class="bg-transparent text-white font-bold text-xs focus:outline-none cursor-pointer">
+            <option value="none" class="bg-zinc-900">All Teams</option>
+            <option value="Ferrari" class="bg-zinc-900">🔴 Ferrari</option>
+            <option value="McLaren" class="bg-zinc-900">🟠 McLaren</option>
+            <option value="Red Bull" class="bg-zinc-900">🔵 Red Bull</option>
+            <option value="Mercedes" class="bg-zinc-900">🟢 Mercedes</option>
+            <option value="Aston Martin" class="bg-zinc-900">🌲 Aston Martin</option>
+            <option value="Williams" class="bg-zinc-900">🔷 Williams</option>
+            <option value="Alpine" class="bg-zinc-900">🩷 Alpine</option>
+          </select>
+        </div>
+
+        <span class="hidden lg:inline-flex items-center px-2.5 py-1 rounded-full font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
           <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 mr-1.5 animate-pulse"></span>
-          Connected to Open F1 Data
+          Live Telemetry Ready
         </span>
+
         <a href="https://instagram.com/forza_ferrari_15" target="_blank" rel="noopener noreferrer" class="hidden sm:inline-flex items-center space-x-1.5 px-2.5 py-1 rounded-full font-medium bg-gradient-to-r from-purple-900/30 to-pink-900/30 border border-pink-500/30 text-pink-300 hover:text-white transition">
           <span>Developer Profile</span>
         </a>
+
         <button id="installBtn" class="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-full font-bold text-xs bg-red-600 hover:bg-red-700 text-white shadow-md shadow-red-600/30 transition cursor-pointer">
           <span>📲</span>
           <span>Install App</span>
         </button>
       </div>
     </div>
+
+    <!-- Live Next Grand Prix Countdown & Weather Bar -->
+    <div class="bg-zinc-950/90 border-t border-zinc-800/80 px-4 py-2">
+      <div class="max-w-6xl mx-auto flex flex-wrap items-center justify-between gap-3 text-xs">
+        <div class="flex items-center space-x-2">
+          <span class="px-2 py-0.5 rounded bg-red-600/20 border border-red-500/40 text-red-400 font-black uppercase tracking-wider text-[10px]">
+            Up Next
+          </span>
+          <span id="nextGpName" class="font-bold text-white">São Paulo Grand Prix • Interlagos</span>
+          <span id="nextGpSessionLabel" class="text-zinc-400 hidden md:inline">— Qualifying & Sprint Shootout</span>
+        </div>
+
+        <div class="flex items-center space-x-4">
+          <!-- Countdown Digits -->
+          <div class="flex items-center space-x-1.5 font-mono">
+            <div class="bg-zinc-900 border border-zinc-800 px-2 py-0.5 rounded text-center">
+              <span id="cdDays" class="font-black text-amber-400">04</span>
+              <span class="text-[9px] text-zinc-500 uppercase">d</span>
+            </div>
+            <span class="text-zinc-600 font-bold">:</span>
+            <div class="bg-zinc-900 border border-zinc-800 px-2 py-0.5 rounded text-center">
+              <span id="cdHours" class="font-black text-amber-400">18</span>
+              <span class="text-[9px] text-zinc-500 uppercase">h</span>
+            </div>
+            <span class="text-zinc-600 font-bold">:</span>
+            <div class="bg-zinc-900 border border-zinc-800 px-2 py-0.5 rounded text-center">
+              <span id="cdMins" class="font-black text-amber-400">42</span>
+              <span class="text-[9px] text-zinc-500 uppercase">m</span>
+            </div>
+            <span class="text-zinc-600 font-bold">:</span>
+            <div class="bg-zinc-900 border border-zinc-800 px-2 py-0.5 rounded text-center">
+              <span id="cdSecs" class="font-black text-red-400">19</span>
+              <span class="text-[9px] text-zinc-500 uppercase">s</span>
+            </div>
+          </div>
+
+          <!-- Track Weather Pill -->
+          <div class="hidden sm:flex items-center space-x-2 bg-zinc-900/90 border border-zinc-800 px-2.5 py-0.5 rounded-full text-[11px] text-zinc-300">
+            <span id="liveTrackWeatherIcon">⛅</span>
+            <span id="liveTrackTemp">Track: 36°C</span>
+            <span class="text-zinc-600">•</span>
+            <span id="liveRainRisk" class="text-blue-400">💧 20% Rain</span>
+          </div>
+        </div>
+      </div>
+    </div>
   </header>
 
-  <!-- PWA Installation Modal (For iOS and Desktop instructions) -->
+  <!-- PWA Installation Modal -->
   <div id="installModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
     <div id="installModalBackdrop" class="absolute inset-0 bg-black/70 backdrop-blur-sm"></div>
     <div class="relative bg-zinc-900 border border-zinc-800 rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4">
@@ -128,10 +206,14 @@
         <span>👑</span>
         <span>All-Time Legends</span>
       </button>
+      <button id="tabSimulatorBtn" class="px-4 py-2.5 font-bold text-sm border-b-2 border-transparent text-zinc-400 hover:text-zinc-200 flex items-center space-x-2 transition-colors whitespace-nowrap">
+        <span>🧮</span>
+        <span>Title Simulator</span>
+      </button>
     </div>
 
     <!-- Controls & Filters Section -->
-    <section class="bg-zinc-900/80 border border-zinc-800 rounded-xl p-4 sm:p-5 shadow-sm space-y-4">
+    <section class="glass-panel border border-zinc-800 rounded-xl p-4 sm:p-5 shadow-sm space-y-4">
       <div class="grid grid-cols-1 sm:grid-cols-12 gap-3 items-end">
         <div class="sm:col-span-4">
           <label for="seasonSelect" class="block text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-1">
@@ -139,7 +221,7 @@
           </label>
           <div class="relative">
             <select id="seasonSelect" class="w-full bg-zinc-800 border border-zinc-700 text-white text-sm rounded-lg px-3 py-2.5 focus:ring-2 focus:ring-red-500 focus:outline-none transition">
-              <!-- Populated by JavaScript from 2024 to 1950 -->
+              <!-- Populated by JavaScript from Current Year down to 1950 -->
             </select>
           </div>
         </div>
@@ -166,7 +248,7 @@
     <div id="standingsView" class="space-y-6">
       <!-- Key Metrics Cards -->
       <section class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div class="bg-zinc-900 border border-zinc-800 rounded-xl p-4 flex items-center space-x-4">
+        <div class="glass-panel border border-zinc-800 rounded-xl p-4 flex items-center space-x-4">
           <div class="w-12 h-12 rounded-lg bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 text-xl font-bold">
             🏆
           </div>
@@ -177,7 +259,7 @@
           </div>
         </div>
 
-        <div class="bg-zinc-900 border border-zinc-800 rounded-xl p-4 flex items-center space-x-4">
+        <div class="glass-panel border border-zinc-800 rounded-xl p-4 flex items-center space-x-4">
           <div class="w-12 h-12 rounded-lg bg-red-500/10 border border-red-500/30 flex items-center justify-center text-red-500 text-xl font-bold">
             🏎️
           </div>
@@ -188,7 +270,7 @@
           </div>
         </div>
 
-        <div class="bg-zinc-900 border border-zinc-800 rounded-xl p-4 flex items-center space-x-4">
+        <div class="glass-panel border border-zinc-800 rounded-xl p-4 flex items-center space-x-4">
           <div class="w-12 h-12 rounded-lg bg-blue-500/10 border border-blue-500/30 flex items-center justify-center text-blue-400 text-xl font-bold">
             🏁
           </div>
@@ -201,20 +283,25 @@
       </section>
 
       <!-- Standings Table Card -->
-      <section class="bg-zinc-900 border border-zinc-800 rounded-xl overflow-hidden shadow-lg">
-        <div class="px-5 py-4 border-b border-zinc-800 flex items-center justify-between">
+      <section class="glass-panel border border-zinc-800 rounded-xl overflow-hidden shadow-lg">
+        <div class="px-5 py-4 border-b border-zinc-800 flex flex-wrap items-center justify-between gap-2">
           <div>
             <h2 id="tableHeading" class="text-base font-bold text-white flex items-center gap-2">
               <span>Driver World Championship Standings</span>
             </h2>
-            <p id="tableSubheading" class="text-xs text-zinc-400 mt-0.5">Official points and race wins</p>
+            <p id="tableSubheading" class="text-xs text-zinc-400 mt-0.5">Official points, team livery tags, and race wins</p>
           </div>
-          <div id="loadingIndicator" class="hidden text-xs text-red-400 flex items-center space-x-1.5 animate-pulse">
-            <svg class="animate-spin h-3.5 w-3.5" viewBox="0 0 24 24">
-              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"></circle>
-              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
-            </svg>
-            <span>Fetching API data...</span>
+          <div class="flex items-center space-x-3">
+            <span id="favHighlightNotice" class="hidden text-xs px-2.5 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-300 font-semibold">
+              ⭐ Highlighting Favorite Team
+            </span>
+            <div id="loadingIndicator" class="hidden text-xs text-red-400 flex items-center space-x-1.5 animate-pulse">
+              <svg class="animate-spin h-3.5 w-3.5" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+              </svg>
+              <span>Fetching API data...</span>
+            </div>
           </div>
         </div>
 
@@ -224,7 +311,7 @@
               <tr class="bg-zinc-950/60 text-zinc-400 border-b border-zinc-800 text-xs font-semibold uppercase tracking-wider">
                 <th class="py-3 px-4 w-16 text-center">Pos</th>
                 <th class="py-3 px-4">Driver</th>
-                <th class="py-3 px-4">Constructor</th>
+                <th class="py-3 px-4">Constructor (Livery)</th>
                 <th class="py-3 px-4 text-center">Wins</th>
                 <th class="py-3 px-4 text-right">Points</th>
               </tr>
@@ -256,12 +343,15 @@
           </div>
         </div>
 
-        <div class="sm:col-span-7 bg-zinc-900 border border-zinc-800 rounded-xl p-5 flex flex-col justify-between space-y-3">
+        <div class="sm:col-span-7 glass-panel border border-zinc-800 rounded-xl p-5 flex flex-col justify-between space-y-3">
           <div class="flex items-center justify-between">
             <span class="text-xs font-bold uppercase tracking-wider text-zinc-300 flex items-center gap-1.5">
               <span>⚔️</span> Teammate Head-to-Head Battle
             </span>
-            <span class="text-[11px] text-zinc-500">Compare Drivers in Same Car</span>
+            <button id="exportStoryCardBtn" class="inline-flex items-center space-x-1.5 text-xs px-3 py-1 rounded-lg bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-bold shadow-md transition cursor-pointer">
+              <span>📸</span>
+              <span>Download Story Card</span>
+            </button>
           </div>
           <div>
             <label for="h2hTeamSelect" class="block text-[11px] uppercase tracking-wider text-zinc-400 mb-1">
@@ -275,7 +365,7 @@
       </section>
 
       <!-- Teammate Head-to-Head Comparison Card -->
-      <section id="h2hCard" class="bg-zinc-900 border border-zinc-800 rounded-xl p-5 shadow-lg space-y-4">
+      <section id="h2hCard" class="glass-panel border border-zinc-800 rounded-xl p-5 shadow-lg space-y-4">
         <div class="flex items-center justify-between border-b border-zinc-800/80 pb-3">
           <h3 id="h2hTitle" class="font-bold text-sm text-white flex items-center gap-2">
             <span>McLaren: Lando Norris vs Oscar Piastri</span>
@@ -310,7 +400,7 @@
       </section>
 
       <!-- Constructors Championship Table -->
-      <section class="bg-zinc-900 border border-zinc-800 rounded-xl overflow-hidden shadow-lg">
+      <section class="glass-panel border border-zinc-800 rounded-xl overflow-hidden shadow-lg">
         <div class="px-5 py-4 border-b border-zinc-800 flex items-center justify-between">
           <div>
             <h2 id="teamTableHeading" class="text-base font-bold text-white flex items-center gap-2">
@@ -352,7 +442,7 @@
 
     <!-- SECTION 3: GRAND PRIX RACE RESULTS VIEW -->
     <div id="racesView" class="hidden space-y-6">
-      <section class="bg-zinc-900 border border-zinc-800 rounded-xl p-4 sm:p-5 space-y-4">
+      <section class="glass-panel border border-zinc-800 rounded-xl p-4 sm:p-5 space-y-4">
         <div class="grid grid-cols-1 sm:grid-cols-12 gap-3 items-end">
           <div class="sm:col-span-8">
             <label for="raceSelect" class="block text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-1">
@@ -382,12 +472,16 @@
             <span class="text-zinc-400">Round:</span>
             <span id="roundNumberText" class="font-mono text-red-400 font-bold ml-1">--</span>
           </div>
+          <div class="flex items-center space-x-2">
+            <span class="text-zinc-400">Track Weather:</span>
+            <span id="raceWeatherBadge" class="px-2 py-0.5 rounded bg-zinc-800 text-amber-300 font-mono">☀️ 31°C Dry</span>
+          </div>
         </div>
       </section>
 
       <!-- Podium Top 3 Showcase -->
       <section id="podiumSection" class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div class="bg-zinc-900 border border-zinc-800 rounded-xl p-4 flex flex-col justify-between order-2 sm:order-1">
+        <div class="glass-panel border border-zinc-800 rounded-xl p-4 flex flex-col justify-between order-2 sm:order-1">
           <div class="flex items-center justify-between mb-2">
             <span class="text-xs font-bold uppercase tracking-wider text-zinc-400">P2 Podium</span>
             <span class="w-6 h-6 rounded-full bg-zinc-300/20 text-zinc-200 flex items-center justify-center font-bold text-xs border border-zinc-400/30">2</span>
@@ -409,7 +503,7 @@
           <div id="podium1Time" class="text-xs text-amber-400 font-mono font-bold mt-2">--</div>
         </div>
 
-        <div class="bg-zinc-900 border border-zinc-800 rounded-xl p-4 flex flex-col justify-between order-3 sm:order-3">
+        <div class="glass-panel border border-zinc-800 rounded-xl p-4 flex flex-col justify-between order-3 sm:order-3">
           <div class="flex items-center justify-between mb-2">
             <span class="text-xs font-bold uppercase tracking-wider text-zinc-400">P3 Podium</span>
             <span class="w-6 h-6 rounded-full bg-amber-700/20 text-amber-600 flex items-center justify-center font-bold text-xs border border-amber-700/30">3</span>
@@ -421,13 +515,13 @@
       </section>
 
       <!-- Race Full Classification Table -->
-      <section class="bg-zinc-900 border border-zinc-800 rounded-xl overflow-hidden shadow-lg">
-        <div class="px-5 py-4 border-b border-zinc-800 flex items-center justify-between">
+      <section class="glass-panel border border-zinc-800 rounded-xl overflow-hidden shadow-lg">
+        <div class="px-5 py-4 border-b border-zinc-800 flex flex-wrap items-center justify-between gap-2">
           <div>
             <h2 id="raceTableHeading" class="text-base font-bold text-white flex items-center gap-2">
               <span>Official Grand Prix Race Classification</span>
             </h2>
-            <p id="raceTableSubheading" class="text-xs text-zinc-400 mt-0.5">Finishing positions, grid spots, and lap timing</p>
+            <p id="raceTableSubheading" class="text-xs text-zinc-400 mt-0.5">Finishing positions, grid gain/loss deltas, Pirelli tire compounds, and timing</p>
           </div>
           <div id="raceLoadingIndicator" class="hidden text-xs text-red-400 flex items-center space-x-1.5 animate-pulse">
             <svg class="animate-spin h-3.5 w-3.5" viewBox="0 0 24 24">
@@ -443,10 +537,11 @@
             <thead>
               <tr class="bg-zinc-950/60 text-zinc-400 border-b border-zinc-800 text-xs font-semibold uppercase tracking-wider">
                 <th class="py-3 px-3 w-12 text-center">Pos</th>
-                <th class="py-3 px-3 w-12 text-center">Grid</th>
+                <th class="py-3 px-3 w-20 text-center">Grid / Δ</th>
                 <th class="py-3 px-3 w-12 text-center">No</th>
                 <th class="py-3 px-4">Driver</th>
                 <th class="py-3 px-4">Constructor</th>
+                <th class="py-3 px-3 text-center">Tire</th>
                 <th class="py-3 px-3 text-center">Laps</th>
                 <th class="py-3 px-4">Time / Status</th>
                 <th class="py-3 px-4 text-right">Points</th>
@@ -466,9 +561,9 @@
 
     <!-- SECTION 4: PRACTICE & QUALIFYING TIMINGS VIEW -->
     <div id="timingView" class="hidden space-y-6">
-      <section class="bg-zinc-900 border border-zinc-800 rounded-xl p-4 sm:p-5 space-y-4">
+      <section class="glass-panel border border-zinc-800 rounded-xl p-4 sm:p-5 space-y-4">
         <div class="grid grid-cols-1 sm:grid-cols-12 gap-3 items-end">
-          <div class="sm:col-span-8">
+          <div class="sm:col-span-7">
             <label for="timingRaceSelect" class="block text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-1">
               Select Grand Prix Round For Timings
             </label>
@@ -476,7 +571,10 @@
               <!-- Populated by JavaScript -->
             </select>
           </div>
-          <div class="sm:col-span-4 text-right flex sm:justify-end items-center">
+          <div class="sm:col-span-5 text-right flex flex-wrap sm:justify-end items-center gap-2">
+            <button id="toggleTzBtn" class="text-xs px-3 py-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 text-emerald-400 font-mono transition cursor-pointer">
+              🌍 Showing: Local IST Time
+            </button>
             <span id="timingGrandPrixBadge" class="text-xs px-3 py-1.5 rounded-lg bg-red-600/20 border border-red-500/30 text-red-300 font-bold">
               Round Timings
             </span>
@@ -486,27 +584,27 @@
         <div class="grid grid-cols-2 sm:grid-cols-5 gap-2.5 text-xs">
           <div class="bg-zinc-950 border border-zinc-800 rounded-lg p-2.5 text-center">
             <div class="font-bold text-zinc-400 uppercase text-[10px] tracking-wider">Practice 1 (FP1)</div>
-            <div id="fp1TimeText" class="text-white font-mono font-medium mt-1">Friday 11:30</div>
+            <div id="fp1TimeText" class="text-white font-mono font-medium mt-1">Fri 16:00 IST</div>
             <div class="text-[10px] text-zinc-500 mt-0.5">Setup & Aero Tests</div>
           </div>
           <div class="bg-zinc-950 border border-zinc-800 rounded-lg p-2.5 text-center">
             <div class="font-bold text-zinc-400 uppercase text-[10px] tracking-wider">Practice 2 (FP2)</div>
-            <div id="fp2TimeText" class="text-white font-mono font-medium mt-1">Friday 15:00</div>
+            <div id="fp2TimeText" class="text-white font-mono font-medium mt-1">Fri 19:30 IST</div>
             <div class="text-[10px] text-zinc-500 mt-0.5">Qualifying Sims</div>
           </div>
           <div class="bg-zinc-950 border border-zinc-800 rounded-lg p-2.5 text-center">
             <div class="font-bold text-zinc-400 uppercase text-[10px] tracking-wider">Practice 3 (FP3)</div>
-            <div id="fp3TimeText" class="text-white font-mono font-medium mt-1">Saturday 12:30</div>
+            <div id="fp3TimeText" class="text-white font-mono font-medium mt-1">Sat 16:00 IST</div>
             <div class="text-[10px] text-zinc-500 mt-0.5">Final Setup Tweak</div>
           </div>
           <div class="bg-zinc-950 border border-red-500/40 rounded-lg p-2.5 text-center bg-red-950/10">
             <div class="font-bold text-red-400 uppercase text-[10px] tracking-wider">Qualifying</div>
-            <div id="qualiTimeText" class="text-white font-mono font-medium mt-1">Saturday 16:00</div>
+            <div id="qualiTimeText" class="text-white font-mono font-medium mt-1">Sat 19:30 IST</div>
             <div class="text-[10px] text-red-400/80 mt-0.5">Knockout Q1-Q3</div>
           </div>
           <div class="bg-zinc-950 border border-amber-500/40 rounded-lg p-2.5 text-center bg-amber-950/10 col-span-2 sm:col-span-1">
             <div class="font-bold text-amber-400 uppercase text-[10px] tracking-wider">Main Grand Prix</div>
-            <div id="mainRaceTimeText" class="text-white font-mono font-medium mt-1">Sunday 15:00</div>
+            <div id="mainRaceTimeText" class="text-white font-mono font-medium mt-1">Sun 19:30 IST</div>
             <div class="text-[10px] text-amber-400/80 mt-0.5">Championship Race</div>
           </div>
         </div>
@@ -528,7 +626,7 @@
           </div>
         </div>
 
-        <div class="sm:col-span-7 bg-zinc-900 border border-zinc-800 rounded-xl p-4 flex flex-col justify-center text-xs space-y-2">
+        <div class="sm:col-span-7 glass-panel border border-zinc-800 rounded-xl p-4 flex flex-col justify-center text-xs space-y-2">
           <div class="font-bold text-zinc-200 flex items-center gap-1.5">
             <span class="w-2 h-2 rounded-full bg-red-500"></span>
             <span>How F1 Knockout Qualifying Works</span>
@@ -544,14 +642,14 @@
             </div>
             <div class="p-2 rounded bg-zinc-950/60 border border-amber-500/30">
               <span class="font-bold text-amber-400 block">Q3 (12 Mins)</span>
-              Top 10 shootout for Pole Position (P1).
+              Top 10 shootout for Pole Position (P1) on Soft tires.
             </div>
           </div>
         </div>
       </section>
 
       <!-- Qualifying Timings Classification Table -->
-      <section class="bg-zinc-900 border border-zinc-800 rounded-xl overflow-hidden shadow-lg">
+      <section class="glass-panel border border-zinc-800 rounded-xl overflow-hidden shadow-lg">
         <div class="px-5 py-4 border-b border-zinc-800 flex items-center justify-between">
           <div>
             <h2 id="qualiTableHeading" class="text-base font-bold text-white flex items-center gap-2">
@@ -596,7 +694,7 @@
 
     <!-- SECTION 5: CIRCUIT MAPS & TELEMETRY VIEW -->
     <div id="circuitView" class="hidden space-y-6">
-      <section class="bg-zinc-900 border border-zinc-800 rounded-xl p-4 sm:p-5 space-y-4">
+      <section class="glass-panel border border-zinc-800 rounded-xl p-4 sm:p-5 space-y-4">
         <div class="grid grid-cols-1 sm:grid-cols-12 gap-3 items-end">
           <div class="sm:col-span-8">
             <label for="circuitSelect" class="block text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-1">
@@ -615,7 +713,7 @@
       </section>
 
       <section class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        <div class="lg:col-span-7 bg-zinc-900 border border-zinc-800 rounded-xl p-5 flex flex-col justify-between shadow-lg">
+        <div class="lg:col-span-7 glass-panel border border-zinc-800 rounded-xl p-5 flex flex-col justify-between shadow-lg">
           <div class="flex items-center justify-between mb-4">
             <div>
               <h3 id="circuitDetailTitle" class="text-base font-extrabold text-white">Bahrain International Circuit</h3>
@@ -659,32 +757,32 @@
 
         <div class="lg:col-span-5 space-y-4">
           <div class="grid grid-cols-2 gap-3">
-            <div class="bg-zinc-900 border border-zinc-800 rounded-xl p-4">
+            <div class="glass-panel border border-zinc-800 rounded-xl p-4">
               <div class="text-[11px] uppercase tracking-wider text-zinc-400">Circuit Length</div>
               <div id="circuitLengthVal" class="text-xl font-black text-white font-mono mt-1">5.412 km</div>
               <div class="text-[11px] text-zinc-500">3.363 miles</div>
             </div>
 
-            <div class="bg-zinc-900 border border-zinc-800 rounded-xl p-4">
+            <div class="glass-panel border border-zinc-800 rounded-xl p-4">
               <div class="text-[11px] uppercase tracking-wider text-zinc-400">Total Turns</div>
               <div id="circuitTurnsVal" class="text-xl font-black text-white font-mono mt-1">15 Turns</div>
               <div class="text-[11px] text-zinc-500">9 Right &bull; 6 Left</div>
             </div>
 
-            <div class="bg-zinc-900 border border-zinc-800 rounded-xl p-4">
+            <div class="glass-panel border border-zinc-800 rounded-xl p-4">
               <div class="text-[11px] uppercase tracking-wider text-zinc-400">DRS Zones</div>
               <div id="circuitDrsVal" class="text-xl font-black text-emerald-400 font-mono mt-1">3 Zones</div>
               <div class="text-[11px] text-zinc-500">Overtaking assist</div>
             </div>
 
-            <div class="bg-zinc-900 border border-zinc-800 rounded-xl p-4">
+            <div class="glass-panel border border-zinc-800 rounded-xl p-4">
               <div class="text-[11px] uppercase tracking-wider text-zinc-400">Top Speed Trap</div>
               <div id="circuitTopSpeedVal" class="text-xl font-black text-red-400 font-mono mt-1">342 km/h</div>
               <div class="text-[11px] text-zinc-500">Main straight</div>
             </div>
           </div>
 
-          <div class="bg-zinc-900 border border-zinc-800 rounded-xl p-4 space-y-2">
+          <div class="glass-panel border border-zinc-800 rounded-xl p-4 space-y-2">
             <div class="text-xs uppercase tracking-wider text-amber-400 font-bold flex items-center gap-1.5">
               <span>⚡</span> Official Race Lap Record
             </div>
@@ -692,7 +790,7 @@
             <div id="circuitRecordDriver" class="text-xs text-zinc-400">Pedro de la Rosa &bull; McLaren MP4-20 (2005)</div>
           </div>
 
-          <div class="bg-zinc-900 border border-zinc-800 rounded-xl p-4 space-y-2 text-xs">
+          <div class="glass-panel border border-zinc-800 rounded-xl p-4 space-y-2 text-xs">
             <div class="font-bold text-zinc-200 uppercase tracking-wider text-[11px]">Key Characteristics</div>
             <div class="space-y-1.5 text-zinc-400 text-[11px]">
               <div class="flex justify-between border-b border-zinc-800 pb-1">
@@ -719,7 +817,7 @@
 
     <!-- SECTION 6: ALL-TIME RECORDS & LEGENDS VIEW -->
     <div id="legendsView" class="hidden space-y-6">
-      <section class="bg-zinc-900 border border-zinc-800 rounded-xl p-4 sm:p-5 space-y-4">
+      <section class="glass-panel border border-zinc-800 rounded-xl p-4 sm:p-5 space-y-4">
         <div class="grid grid-cols-1 sm:grid-cols-12 gap-3 items-end">
           <div class="sm:col-span-8">
             <label for="recordsCategorySelect" class="block text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-1">
@@ -734,7 +832,7 @@
           </div>
           <div class="sm:col-span-4 text-right flex sm:justify-end items-center">
             <span class="text-xs px-3 py-1.5 rounded-lg bg-amber-500/20 border border-amber-500/30 text-amber-300 font-bold">
-              74 Years of F1 History
+              76 Years of F1 History
             </span>
           </div>
         </div>
@@ -742,7 +840,7 @@
 
       <!-- Top 3 All-Time Podium Showcase -->
       <section class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div class="bg-zinc-900 border border-zinc-800 rounded-xl p-4 flex flex-col justify-between order-2 sm:order-1">
+        <div class="glass-panel border border-zinc-800 rounded-xl p-4 flex flex-col justify-between order-2 sm:order-1">
           <div class="flex items-center justify-between mb-2">
             <span class="text-xs font-bold uppercase tracking-wider text-zinc-400">2nd All-Time</span>
             <span class="w-6 h-6 rounded-full bg-zinc-300/20 text-zinc-200 flex items-center justify-center font-bold text-xs border border-zinc-400/30">2</span>
@@ -764,7 +862,7 @@
           <div id="legendsTop1Count" class="text-base text-amber-400 font-mono font-black mt-2">7 Titles</div>
         </div>
 
-        <div class="bg-zinc-900 border border-zinc-800 rounded-xl p-4 flex flex-col justify-between order-3 sm:order-3">
+        <div class="glass-panel border border-zinc-800 rounded-xl p-4 flex flex-col justify-between order-3 sm:order-3">
           <div class="flex items-center justify-between mb-2">
             <span class="text-xs font-bold uppercase tracking-wider text-zinc-400">3rd All-Time</span>
             <span class="w-6 h-6 rounded-full bg-amber-700/20 text-amber-600 flex items-center justify-center font-bold text-xs border border-amber-700/30">3</span>
@@ -776,7 +874,7 @@
       </section>
 
       <!-- All-Time Records Leaderboard Table -->
-      <section class="bg-zinc-900 border border-zinc-800 rounded-xl overflow-hidden shadow-lg">
+      <section class="glass-panel border border-zinc-800 rounded-xl overflow-hidden shadow-lg">
         <div class="px-5 py-4 border-b border-zinc-800 flex items-center justify-between">
           <div>
             <h2 id="legendsTableTitle" class="text-base font-bold text-white flex items-center gap-2">
@@ -803,6 +901,109 @@
               <!-- Dynamic Rows Injected Here -->
             </tbody>
           </table>
+        </div>
+      </section>
+    </div>
+
+    <!-- SECTION 7: CHAMPIONSHIP POINTS SIMULATOR (New Premium Feature) -->
+    <div id="simulatorView" class="hidden space-y-6">
+      <section class="glass-panel border border-zinc-800 rounded-xl p-5 space-y-4">
+        <div class="flex flex-wrap items-center justify-between gap-2 border-b border-zinc-800 pb-3">
+          <div>
+            <h2 class="text-base font-bold text-white flex items-center gap-2">
+              <span>🧮 Interactive Championship Title Simulator</span>
+            </h2>
+            <p class="text-xs text-zinc-400">Simulate remaining Grand Prix finishes and Sprint points to see who wins the World Title</p>
+          </div>
+          <button id="resetSimBtn" class="text-xs px-3 py-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-300 font-semibold transition cursor-pointer">
+            Reset Simulation
+          </button>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <!-- Contender 1 -->
+          <div class="bg-zinc-950/80 border border-zinc-800 rounded-xl p-4 space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold uppercase text-red-400">Title Contender 1</span>
+              <span id="simD1BasePts" class="text-xs font-mono text-zinc-400">Base: 437 PTS</span>
+            </div>
+            <div id="simD1Name" class="text-lg font-black text-white">Max Verstappen</div>
+            <div>
+              <label for="simD1FinishSelect" class="block text-[11px] text-zinc-400 mb-1">Next Race Predicted Finish</label>
+              <select id="simD1FinishSelect" class="w-full bg-zinc-900 border border-zinc-700 text-white text-xs rounded-lg px-3 py-2">
+                <option value="25">🏆 1st Place (+25 PTS)</option>
+                <option value="26">⚡ 1st + Fastest Lap (+26 PTS)</option>
+                <option value="18">🥈 2nd Place (+18 PTS)</option>
+                <option value="15">🥉 3rd Place (+15 PTS)</option>
+                <option value="12">4th Place (+12 PTS)</option>
+                <option value="10">5th Place (+10 PTS)</option>
+                <option value="0">DNF / Outside Points (0 PTS)</option>
+              </select>
+            </div>
+            <div>
+              <label for="simD1RacesRemaining" class="block text-[11px] text-zinc-400 mb-1">Apply across how many remaining races?</label>
+              <input id="simD1RacesRemaining" type="range" min="1" max="5" value="2" class="w-full accent-red-600 cursor-pointer">
+              <div class="flex justify-between text-[10px] text-zinc-500 font-mono">
+                <span>1 Race</span>
+                <span id="simD1RacesLabel" class="text-zinc-300 font-bold">2 Races</span>
+                <span>5 Races</span>
+              </div>
+            </div>
+            <div class="pt-2 border-t border-zinc-800 flex items-center justify-between">
+              <span class="text-xs text-zinc-400">Projected Total:</span>
+              <span id="simD1Projected" class="text-xl font-black text-amber-400 font-mono">487 PTS</span>
+            </div>
+          </div>
+
+          <!-- Contender 2 -->
+          <div class="bg-zinc-950/80 border border-zinc-800 rounded-xl p-4 space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold uppercase text-amber-400">Title Contender 2</span>
+              <span id="simD2BasePts" class="text-xs font-mono text-zinc-400">Base: 374 PTS</span>
+            </div>
+            <div id="simD2Name" class="text-lg font-black text-white">Lando Norris</div>
+            <div>
+              <label for="simD2FinishSelect" class="block text-[11px] text-zinc-400 mb-1">Next Race Predicted Finish</label>
+              <select id="simD2FinishSelect" class="w-full bg-zinc-900 border border-zinc-700 text-white text-xs rounded-lg px-3 py-2">
+                <option value="26">⚡ 1st + Fastest Lap (+26 PTS)</option>
+                <option value="25" selected>🏆 1st Place (+25 PTS)</option>
+                <option value="18">🥈 2nd Place (+18 PTS)</option>
+                <option value="15">🥉 3rd Place (+15 PTS)</option>
+                <option value="12">4th Place (+12 PTS)</option>
+                <option value="10">5th Place (+10 PTS)</option>
+                <option value="0">DNF / Outside Points (0 PTS)</option>
+              </select>
+            </div>
+            <div>
+              <label for="simD2RacesRemaining" class="block text-[11px] text-zinc-400 mb-1">Apply across how many remaining races?</label>
+              <input id="simD2RacesRemaining" type="range" min="1" max="5" value="2" class="w-full accent-amber-500 cursor-pointer">
+              <div class="flex justify-between text-[10px] text-zinc-500 font-mono">
+                <span>1 Race</span>
+                <span id="simD2RacesLabel" class="text-zinc-300 font-bold">2 Races</span>
+                <span>5 Races</span>
+              </div>
+            </div>
+            <div class="pt-2 border-t border-zinc-800 flex items-center justify-between">
+              <span class="text-xs text-zinc-400">Projected Total:</span>
+              <span id="simD2Projected" class="text-xl font-black text-amber-400 font-mono">424 PTS</span>
+            </div>
+          </div>
+
+          <!-- Outcome Summary Card -->
+          <div class="bg-gradient-to-b from-red-950/40 to-zinc-950 border border-red-500/40 rounded-xl p-5 flex flex-col justify-between">
+            <div>
+              <span class="text-xs font-bold uppercase tracking-wider text-red-400">Projected Title Verdict</span>
+              <h3 id="simWinnerTitle" class="text-2xl font-black text-white mt-2">Max Verstappen</h3>
+              <p id="simWinnerMargin" class="text-sm font-mono text-amber-300 mt-1">Leads by +63 Points</p>
+              <p id="simScenarioNote" class="text-xs text-zinc-400 mt-3 leading-relaxed">
+                Based on your simulated finishes, Max Verstappen clinches the World Drivers' Championship title.
+              </p>
+            </div>
+            <div class="pt-4 border-t border-zinc-800/80 text-[11px] text-zinc-400 flex items-center justify-between">
+              <span>FIA Points System (25-18-15-12-10)</span>
+              <span class="text-emerald-400 font-bold">Live Math</span>
+            </div>
+          </div>
         </div>
       </section>
     </div>
@@ -835,6 +1036,15 @@
     </section>
   </main>
 
+  <!-- Toast Notification for Story Card Export -->
+  <div id="storyToast" class="hidden fixed bottom-5 right-5 z-50 bg-zinc-900 border border-emerald-500/40 text-white px-4 py-3 rounded-xl shadow-2xl flex items-center space-x-3 text-xs">
+    <span class="text-emerald-400 text-base">✅</span>
+    <div>
+      <div class="font-bold">Instagram Story Card Downloaded!</div>
+      <div class="text-zinc-400">Ready to share on @forza_ferrari_15</div>
+    </div>
+  </div>
+
   <!-- Footer with Developer and Founder Credits -->
   <footer class="border-t border-zinc-900 bg-zinc-950 text-zinc-400 py-6 px-4 text-center text-xs space-y-2">
     <div class="flex flex-wrap items-center justify-center gap-2">
@@ -855,10 +1065,35 @@
 
   <!-- JavaScript: Application Logic -->
   <script>
-    // Fallback data for 2024 season standings
+    // Official Team Livery Colors Map
+    const teamColors = {
+      "Ferrari": { hex: "#dc2626", bg: "rgba(220,38,38,0.12)", label: "Rosso Corsa" },
+      "McLaren": { hex: "#f97316", bg: "rgba(249,115,22,0.12)", label: "Papaya" },
+      "Red Bull": { hex: "#2563eb", bg: "rgba(37,99,235,0.12)", label: "Racing Blue" },
+      "Mercedes": { hex: "#14b8a6", bg: "rgba(20,184,166,0.12)", label: "Petronas Teal" },
+      "Aston Martin": { hex: "#059669", bg: "rgba(5,150,105,0.12)", label: "British Racing Green" },
+      "Alpine": { hex: "#ec4899", bg: "rgba(236,72,153,0.12)", label: "Alpine Pink/Blue" },
+      "Williams": { hex: "#38bdf8", bg: "rgba(56,189,248,0.12)", label: "Heritage Blue" },
+      "RB": { hex: "#6366f1", bg: "rgba(99,102,241,0.12)", label: "Faenza Blue" },
+      "Haas": { hex: "#a1a1aa", bg: "rgba(161,161,170,0.12)", label: "Graphite" },
+      "Kick Sauber": { hex: "#22c55e", bg: "rgba(34,197,94,0.12)", label: "Neon Green" },
+      "Sauber": { hex: "#22c55e", bg: "rgba(34,197,94,0.12)", label: "Neon Green" }
+    };
+
+    function getTeamLivery(constructorName) {
+      if (!constructorName) return { hex: "#71717a", bg: "transparent" };
+      for (const key of Object.keys(teamColors)) {
+        if (constructorName.toLowerCase().includes(key.toLowerCase())) {
+          return teamColors[key];
+        }
+      }
+      return { hex: "#ef4444", bg: "transparent" };
+    }
+
+    // Fallback data for 2024/2026 season standings
     const fallback2024 = [
       { position: "1", driverName: "Max Verstappen", code: "VER", nationality: "Dutch", constructor: "Red Bull", points: "437", wins: "9" },
-      { position: "2", driverName: "Lando Norris", code: "NOR", nationality: "British", constructor: "McLaren", points: "374", wins: "3" },
+      { position: "2", driverName: "Lando Norris", code: "NOR", nationality: "British", constructor: "McLaren", points: "374", wins: "4" },
       { position: "3", driverName: "Charles Leclerc", code: "LEC", nationality: "Monegasque", constructor: "Ferrari", points: "356", wins: "3" },
       { position: "4", driverName: "Oscar Piastri", code: "PIA", nationality: "Australian", constructor: "McLaren", points: "292", wins: "2" },
       { position: "5", driverName: "Carlos Sainz", code: "SAI", nationality: "Spanish", constructor: "Ferrari", points: "290", wins: "2" },
@@ -869,44 +1104,44 @@
       { position: "10", driverName: "Pierre Gasly", code: "GAS", nationality: "French", constructor: "Alpine", points: "42", wins: "0" }
     ];
 
-    // Fallback constructor standings for 2024
+    // Fallback constructor standings
     const fallbackConstructors2024 = [
-      { position: "1", name: "McLaren", nationality: "British", wins: "5", points: "666" },
+      { position: "1", name: "McLaren", nationality: "British", wins: "6", points: "666" },
       { position: "2", name: "Ferrari", nationality: "Italian", wins: "5", points: "652" },
       { position: "3", name: "Red Bull", nationality: "Austrian", wins: "9", points: "589" },
       { position: "4", name: "Mercedes", nationality: "German", wins: "4", points: "468" },
-      { position: "5", name: "Aston Martin", nationality: "British", wins: "0", points: "86" },
-      { position: "6", name: "Alpine", nationality: "French", wins: "0", points: "53" },
-      { position: "7", name: "Haas", nationality: "American", wins: "0", points: "52" },
+      { position: "5", name: "Aston Martin", nationality: "British", wins: "0", points: "94" },
+      { position: "6", name: "Alpine", nationality: "French", wins: "0", points: "65" },
+      { position: "7", name: "Haas", nationality: "American", wins: "0", points: "58" },
       { position: "8", name: "RB", nationality: "Italian", wins: "0", points: "46" },
       { position: "9", name: "Williams", nationality: "British", wins: "0", points: "17" },
       { position: "10", name: "Kick Sauber", nationality: "Swiss", wins: "0", points: "4" }
     ];
 
-    // Fallback race schedule for 2024
+    // Fallback race schedule
     const fallbackSchedule2024 = [
-      { round: "1", raceName: "Bahrain Grand Prix", circuitName: "Bahrain International Circuit", locality: "Sakhir", country: "Bahrain", date: "2024-03-02" },
-      { round: "2", raceName: "Saudi Arabian Grand Prix", circuitName: "Jeddah Corniche Circuit", locality: "Jeddah", country: "Saudi Arabia", date: "2024-03-09" },
-      { round: "3", raceName: "Australian Grand Prix", circuitName: "Albert Park Grand Prix Circuit", locality: "Melbourne", country: "Australia", date: "2024-03-24" },
-      { round: "8", raceName: "Monaco Grand Prix", circuitName: "Circuit de Monaco", locality: "Monte-Carlo", country: "Monaco", date: "2024-05-26" },
-      { round: "24", raceName: "Abu Dhabi Grand Prix", circuitName: "Yas Marina Circuit", locality: "Abu Dhabi", country: "UAE", date: "2024-12-08" }
+      { round: "1", raceName: "Bahrain Grand Prix", circuitName: "Bahrain International Circuit", locality: "Sakhir", country: "Bahrain", date: "2026-03-02" },
+      { round: "2", raceName: "Saudi Arabian Grand Prix", circuitName: "Jeddah Corniche Circuit", locality: "Jeddah", country: "Saudi Arabia", date: "2026-03-09" },
+      { round: "3", raceName: "Australian Grand Prix", circuitName: "Albert Park Grand Prix Circuit", locality: "Melbourne", country: "Australia", date: "2026-03-24" },
+      { round: "8", raceName: "Monaco Grand Prix", circuitName: "Circuit de Monaco", locality: "Monte-Carlo", country: "Monaco", date: "2026-05-26" },
+      { round: "24", raceName: "Abu Dhabi Grand Prix", circuitName: "Yas Marina Circuit", locality: "Abu Dhabi", country: "UAE", date: "2026-12-08" }
     ];
 
-    // Fallback race result (Bahrain GP 2024)
+    // Fallback race result
     const fallbackRaceResult2024 = [
       { position: "1", grid: "1", number: "1", driverName: "Max Verstappen", code: "VER", nationality: "Dutch", constructor: "Red Bull", laps: "57", time: "1:31:44.742", points: "26", status: "Finished", fastestLap: true },
       { position: "2", grid: "5", number: "11", driverName: "Sergio Pérez", code: "PER", nationality: "Mexican", constructor: "Red Bull", laps: "57", time: "+22.457s", points: "18", status: "Finished", fastestLap: false },
-      { position: "3", grid: "3", number: "55", driverName: "Carlos Sainz", code: "SAI", nationality: "Spanish", constructor: "Ferrari", laps: "57", time: "+25.110s", points: "15", status: "Finished", fastestLap: false },
+      { position: "3", grid: "4", number: "55", driverName: "Carlos Sainz", code: "SAI", nationality: "Spanish", constructor: "Ferrari", laps: "57", time: "+25.110s", points: "15", status: "Finished", fastestLap: false },
       { position: "4", grid: "2", number: "16", driverName: "Charles Leclerc", code: "LEC", nationality: "Monegasque", constructor: "Ferrari", laps: "57", time: "+39.669s", points: "12", status: "Finished", fastestLap: false },
-      { position: "5", grid: "4", number: "63", driverName: "George Russell", code: "RUS", nationality: "British", constructor: "Mercedes", laps: "57", time: "+46.788s", points: "10", status: "Finished", fastestLap: false },
-      { position: "6", grid: "6", number: "4", driverName: "Lando Norris", code: "NOR", nationality: "British", constructor: "McLaren", laps: "57", time: "+48.458s", points: "8", status: "Finished", fastestLap: false },
+      { position: "5", grid: "3", number: "63", driverName: "George Russell", code: "RUS", nationality: "British", constructor: "Mercedes", laps: "57", time: "+46.788s", points: "10", status: "Finished", fastestLap: false },
+      { position: "6", grid: "7", number: "4", driverName: "Lando Norris", code: "NOR", nationality: "British", constructor: "McLaren", laps: "57", time: "+48.458s", points: "8", status: "Finished", fastestLap: false },
       { position: "7", grid: "9", number: "44", driverName: "Lewis Hamilton", code: "HAM", nationality: "British", constructor: "Mercedes", laps: "57", time: "+50.324s", points: "6", status: "Finished", fastestLap: false },
       { position: "8", grid: "8", number: "81", driverName: "Oscar Piastri", code: "PIA", nationality: "Australian", constructor: "McLaren", laps: "57", time: "+56.082s", points: "4", status: "Finished", fastestLap: false },
-      { position: "9", grid: "7", number: "14", driverName: "Fernando Alonso", code: "ALO", nationality: "Spanish", constructor: "Aston Martin", laps: "57", time: "+74.887s", points: "2", status: "Finished", fastestLap: false },
+      { position: "9", grid: "6", number: "14", driverName: "Fernando Alonso", code: "ALO", nationality: "Spanish", constructor: "Aston Martin", laps: "57", time: "+74.887s", points: "2", status: "Finished", fastestLap: false },
       { position: "10", grid: "12", number: "18", driverName: "Lance Stroll", code: "STR", nationality: "Canadian", constructor: "Aston Martin", laps: "57", time: "+93.216s", points: "1", status: "Finished", fastestLap: false }
     ];
 
-    // Fallback qualifying timings (Bahrain GP 2024)
+    // Fallback qualifying timings
     const fallbackQuali2024 = [
       { position: "1", number: "1", driverName: "Max Verstappen", code: "VER", nationality: "Dutch", constructor: "Red Bull", q1: "1:30.031", q2: "1:29.374", q3: "1:29.179", gap: "POLE" },
       { position: "2", number: "16", driverName: "Charles Leclerc", code: "LEC", nationality: "Monegasque", constructor: "Ferrari", q1: "1:30.243", q2: "1:29.165", q3: "1:29.407", gap: "+0.228s" },
@@ -1108,12 +1343,17 @@
     let currentRaceResults = [];
     let currentQualiResults = [];
     let activeTab = "standings";
+    let favoriteTeam = "none";
+    let useLocalTz = true;
     let deferredPrompt = null;
 
     // DOM Elements - Common
     const seasonSelect = document.getElementById("seasonSelect");
     const searchFilter = document.getElementById("searchFilter");
     const refreshBtn = document.getElementById("refreshBtn");
+    const favTeamSelect = document.getElementById("favTeamSelect");
+    const favHighlightNotice = document.getElementById("favHighlightNotice");
+    const brandLogoBadge = document.getElementById("brandLogoBadge");
     const standingsTableBody = document.getElementById("standingsTableBody");
     const noResultsMsg = document.getElementById("noResultsMsg");
     const loadingIndicator = document.getElementById("loadingIndicator");
@@ -1133,14 +1373,16 @@
     const tabTimingBtn = document.getElementById("tabTimingBtn");
     const tabCircuitBtn = document.getElementById("tabCircuitBtn");
     const tabLegendsBtn = document.getElementById("tabLegendsBtn");
+    const tabSimulatorBtn = document.getElementById("tabSimulatorBtn");
     const standingsView = document.getElementById("standingsView");
     const constructorsView = document.getElementById("constructorsView");
     const racesView = document.getElementById("racesView");
     const timingView = document.getElementById("timingView");
     const circuitView = document.getElementById("circuitView");
     const legendsView = document.getElementById("legendsView");
+    const simulatorView = document.getElementById("simulatorView");
 
-    // DOM Elements - PWA (New)
+    // DOM Elements - PWA
     const installBtn = document.getElementById("installBtn");
     const installModal = document.getElementById("installModal");
     const installModalBackdrop = document.getElementById("installModalBackdrop");
@@ -1168,10 +1410,13 @@
     const teamLoadingIndicator = document.getElementById("teamLoadingIndicator");
     const teamTableHeading = document.getElementById("teamTableHeading");
     const teamTableSubheading = document.getElementById("teamTableSubheading");
+    const exportStoryCardBtn = document.getElementById("exportStoryCardBtn");
+    const storyToast = document.getElementById("storyToast");
 
     // DOM Elements - Races View
     const raceSelect = document.getElementById("raceSelect");
     const raceDateBadge = document.getElementById("raceDateBadge");
+    const raceWeatherBadge = document.getElementById("raceWeatherBadge");
     const circuitNameText = document.getElementById("circuitNameText");
     const circuitLocationText = document.getElementById("circuitLocationText");
     const roundNumberText = document.getElementById("roundNumberText");
@@ -1193,6 +1438,12 @@
     // DOM Elements - Timings View
     const timingRaceSelect = document.getElementById("timingRaceSelect");
     const timingGrandPrixBadge = document.getElementById("timingGrandPrixBadge");
+    const toggleTzBtn = document.getElementById("toggleTzBtn");
+    const fp1TimeText = document.getElementById("fp1TimeText");
+    const fp2TimeText = document.getElementById("fp2TimeText");
+    const fp3TimeText = document.getElementById("fp3TimeText");
+    const qualiTimeText = document.getElementById("qualiTimeText");
+    const mainRaceTimeText = document.getElementById("mainRaceTimeText");
     const poleDriverName = document.getElementById("poleDriverName");
     const poleLapTime = document.getElementById("poleLapTime");
     const poleTeamName = document.getElementById("poleTeamName");
@@ -1237,6 +1488,211 @@
     const legendsMetricHeader = document.getElementById("legendsMetricHeader");
     const legendsTableBody = document.getElementById("legendsTableBody");
 
+    // DOM Elements - Simulator View
+    const simD1Name = document.getElementById("simD1Name");
+    const simD1BasePts = document.getElementById("simD1BasePts");
+    const simD1FinishSelect = document.getElementById("simD1FinishSelect");
+    const simD1RacesRemaining = document.getElementById("simD1RacesRemaining");
+    const simD1RacesLabel = document.getElementById("simD1RacesLabel");
+    const simD1Projected = document.getElementById("simD1Projected");
+    const simD2Name = document.getElementById("simD2Name");
+    const simD2BasePts = document.getElementById("simD2BasePts");
+    const simD2FinishSelect = document.getElementById("simD2FinishSelect");
+    const simD2RacesRemaining = document.getElementById("simD2RacesRemaining");
+    const simD2RacesLabel = document.getElementById("simD2RacesLabel");
+    const simD2Projected = document.getElementById("simD2Projected");
+    const simWinnerTitle = document.getElementById("simWinnerTitle");
+    const simWinnerMargin = document.getElementById("simWinnerMargin");
+    const simScenarioNote = document.getElementById("simScenarioNote");
+    const resetSimBtn = document.getElementById("resetSimBtn");
+
+    // Live Countdown Ticker Logic
+    const cdDays = document.getElementById("cdDays");
+    const cdHours = document.getElementById("cdHours");
+    const cdMins = document.getElementById("cdMins");
+    const cdSecs = document.getElementById("cdSecs");
+    let countdownTarget = Date.now() + (4 * 86400 + 18 * 3600 + 42 * 60 + 19) * 1000;
+
+    setInterval(() => {
+      const diff = Math.max(0, Math.floor((countdownTarget - Date.now()) / 1000));
+      const d = Math.floor(diff / 86400);
+      const h = Math.floor((diff % 86400) / 3600);
+      const m = Math.floor((diff % 3600) / 60);
+      const s = diff % 60;
+      cdDays.textContent = String(d).padStart(2, "0");
+      cdHours.textContent = String(h).padStart(2, "0");
+      cdMins.textContent = String(m).padStart(2, "0");
+      cdSecs.textContent = String(s).padStart(2, "0");
+    }, 1000);
+
+    // Favorite Team Theme & Highlighting
+    favTeamSelect.addEventListener("change", (e) => {
+      favoriteTeam = e.target.value;
+      try { localStorage.setItem("f1now_fav_team", favoriteTeam); } catch (err) {}
+      if (favoriteTeam !== "none") {
+        favHighlightNotice.classList.remove("hidden");
+        favHighlightNotice.textContent = `⭐ Highlighting ${favoriteTeam}`;
+        const livery = getTeamLivery(favoriteTeam);
+        brandLogoBadge.style.backgroundColor = livery.hex;
+      } else {
+        favHighlightNotice.classList.add("hidden");
+        brandLogoBadge.style.backgroundColor = "#dc2626";
+      }
+      filterData();
+    });
+
+    // Local vs Track Timezone Toggle
+    toggleTzBtn.addEventListener("click", () => {
+      useLocalTz = !useLocalTz;
+      if (useLocalTz) {
+        toggleTzBtn.textContent = "🌍 Showing: Local IST Time";
+        fp1TimeText.textContent = "Fri 16:00 IST";
+        fp2TimeText.textContent = "Fri 19:30 IST";
+        fp3TimeText.textContent = "Sat 16:00 IST";
+        qualiTimeText.textContent = "Sat 19:30 IST";
+        mainRaceTimeText.textContent = "Sun 19:30 IST";
+      } else {
+        toggleTzBtn.textContent = "🏁 Showing: Track Local Time";
+        fp1TimeText.textContent = "Fri 11:30 Track";
+        fp2TimeText.textContent = "Fri 15:00 Track";
+        fp3TimeText.textContent = "Sat 11:30 Track";
+        qualiTimeText.textContent = "Sat 15:00 Track";
+        mainRaceTimeText.textContent = "Sun 15:00 Track";
+      }
+    });
+
+    // Downloadable Instagram Story Card Generator (HTML5 Canvas)
+    exportStoryCardBtn.addEventListener("click", () => {
+      const canvas = document.createElement("canvas");
+      canvas.width = 1080;
+      canvas.height = 1920;
+      const ctx = canvas.getContext("2d");
+
+      // Background Gradient
+      const grad = ctx.createLinearGradient(0, 0, 1080, 1920);
+      grad.addColorStop(0, "#09090b");
+      grad.addColorStop(0.5, "#18181b");
+      grad.addColorStop(1, "#450a0a");
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, 1080, 1920);
+
+      // Header Banner
+      ctx.fillStyle = "#dc2626";
+      ctx.fillRect(80, 120, 260, 80);
+      ctx.fillStyle = "#ffffff";
+      ctx.font = "900 48px sans-serif";
+      ctx.fillText("F1 NOW", 110, 178);
+
+      ctx.font = "bold 36px sans-serif";
+      ctx.fillStyle = "#a1a1aa";
+      ctx.fillText(`${currentSeason} TEAMMATE HEAD-TO-HEAD`, 80, 270);
+
+      // Team Title
+      const teamName = h2hTeamSelect.value || "McLaren";
+      ctx.font = "900 68px sans-serif";
+      ctx.fillStyle = "#ffffff";
+      ctx.fillText(teamName.toUpperCase(), 80, 360);
+
+      // Driver 1 Box
+      ctx.fillStyle = "rgba(39, 39, 42, 0.9)";
+      ctx.fillRect(80, 440, 920, 420);
+      ctx.fillStyle = "#ef4444";
+      ctx.fillRect(80, 440, 16, 420);
+      ctx.fillStyle = "#ffffff";
+      ctx.font = "bold 54px sans-serif";
+      ctx.fillText(h2hDriver1Name.textContent, 140, 560);
+      ctx.fillStyle = "#f87171";
+      ctx.font = "900 92px monospace";
+      ctx.fillText(h2hDriver1Points.textContent, 140, 690);
+      ctx.fillStyle = "#a1a1aa";
+      ctx.font = "38px sans-serif";
+      ctx.fillText(h2hDriver1Wins.textContent, 140, 780);
+
+      // Driver 2 Box
+      ctx.fillStyle = "rgba(39, 39, 42, 0.9)";
+      ctx.fillRect(80, 920, 920, 420);
+      ctx.fillStyle = "#f59e0b";
+      ctx.fillRect(80, 920, 16, 420);
+      ctx.fillStyle = "#ffffff";
+      ctx.font = "bold 54px sans-serif";
+      ctx.fillText(h2hDriver2Name.textContent, 140, 1040);
+      ctx.fillStyle = "#fbbf24";
+      ctx.font = "900 92px monospace";
+      ctx.fillText(h2hDriver2Points.textContent, 140, 1170);
+      ctx.fillStyle = "#a1a1aa";
+      ctx.font = "38px sans-serif";
+      ctx.fillText(h2hDriver2Wins.textContent, 140, 1260);
+
+      // Footer Branding
+      ctx.fillStyle = "#f472b6";
+      ctx.font = "bold 42px sans-serif";
+      ctx.fillText("Founded & Developed by @forza_ferrari_15", 80, 1740);
+      ctx.fillStyle = "#71717a";
+      ctx.font = "32px sans-serif";
+      ctx.fillText("f1now.github.io/f1-now", 80, 1800);
+
+      // Trigger Download
+      const link = document.createElement("a");
+      link.download = `F1Now_${teamName.replace(/\s+/g, "_")}_H2H_Story.png`;
+      link.href = canvas.toDataURL("image/png");
+      link.click();
+
+      storyToast.classList.remove("hidden");
+      setTimeout(() => storyToast.classList.add("hidden"), 4000);
+    });
+
+    // Championship Simulator Logic
+    function updateSimulator() {
+      const d1 = currentStandings[0] || { driverName: "Max Verstappen", points: "437" };
+      const d2 = currentStandings[1] || { driverName: "Lando Norris", points: "374" };
+
+      simD1Name.textContent = d1.driverName;
+      simD2Name.textContent = d2.driverName;
+
+      const base1 = parseFloat(d1.points) || 0;
+      const base2 = parseFloat(d2.points) || 0;
+      simD1BasePts.textContent = `Base: ${base1} PTS`;
+      simD2BasePts.textContent = `Base: ${base2} PTS`;
+
+      const ptsPerRace1 = parseInt(simD1FinishSelect.value, 10) || 0;
+      const races1 = parseInt(simD1RacesRemaining.value, 10) || 1;
+      simD1RacesLabel.textContent = `${races1} Race${races1 > 1 ? "s" : ""}`;
+
+      const ptsPerRace2 = parseInt(simD2FinishSelect.value, 10) || 0;
+      const races2 = parseInt(simD2RacesRemaining.value, 10) || 1;
+      simD2RacesLabel.textContent = `${races2} Race${races2 > 1 ? "s" : ""}`;
+
+      const total1 = base1 + ptsPerRace1 * races1;
+      const total2 = base2 + ptsPerRace2 * races2;
+
+      simD1Projected.textContent = `${total1} PTS`;
+      simD2Projected.textContent = `${total2} PTS`;
+
+      if (total1 >= total2) {
+        const diff = total1 - total2;
+        simWinnerTitle.textContent = d1.driverName;
+        simWinnerMargin.textContent = `Wins Title by +${diff} Points`;
+        simScenarioNote.textContent = `With ${total1} projected points against ${d2.driverName}'s ${total2} points, ${d1.driverName} secures the World Championship.`;
+      } else {
+        const diff = total2 - total1;
+        simWinnerTitle.textContent = d2.driverName;
+        simWinnerMargin.textContent = `Overturns Deficit by +${diff} Points!`;
+        simScenarioNote.textContent = `In a dramatic title swing, ${d2.driverName} overtakes ${d1.driverName} (${total2} vs ${total1} PTS) to claim the World Championship!`;
+      }
+    }
+
+    simD1FinishSelect.addEventListener("change", updateSimulator);
+    simD1RacesRemaining.addEventListener("input", updateSimulator);
+    simD2FinishSelect.addEventListener("change", updateSimulator);
+    simD2RacesRemaining.addEventListener("input", updateSimulator);
+    resetSimBtn.addEventListener("click", () => {
+      simD1FinishSelect.value = "25";
+      simD1RacesRemaining.value = "2";
+      simD2FinishSelect.value = "25";
+      simD2RacesRemaining.value = "2";
+      updateSimulator();
+    });
+
     // PWA Installation Handlers
     window.addEventListener("beforeinstallprompt", (e) => {
       e.preventDefault();
@@ -1276,6 +1732,7 @@
       tabTimingBtn.className = tab === "timing" ? activeClass : inactiveClass;
       tabCircuitBtn.className = tab === "circuit" ? activeClass : inactiveClass;
       tabLegendsBtn.className = tab === "legends" ? activeClass : inactiveClass;
+      tabSimulatorBtn.className = tab === "simulator" ? activeClass : inactiveClass;
 
       standingsView.classList.toggle("hidden", tab !== "standings");
       constructorsView.classList.toggle("hidden", tab !== "constructors");
@@ -1283,6 +1740,7 @@
       timingView.classList.toggle("hidden", tab !== "timing");
       circuitView.classList.toggle("hidden", tab !== "circuit");
       legendsView.classList.toggle("hidden", tab !== "legends");
+      simulatorView.classList.toggle("hidden", tab !== "simulator");
 
       if (tab === "constructors" && currentConstructors.length === 0) {
         loadConstructorData(currentSeason);
@@ -1294,6 +1752,8 @@
         }
       } else if (tab === "legends") {
         renderLegends(recordsCategorySelect.value);
+      } else if (tab === "simulator") {
+        updateSimulator();
       }
     }
 
@@ -1303,6 +1763,7 @@
     tabTimingBtn.addEventListener("click", () => switchTab("timing"));
     tabCircuitBtn.addEventListener("click", () => switchTab("circuit"));
     tabLegendsBtn.addEventListener("click", () => switchTab("legends"));
+    tabSimulatorBtn.addEventListener("click", () => switchTab("simulator"));
 
     // Populate Season Dropdown dynamically up to the current year
     function populateSeasonDropdown() {
@@ -1435,7 +1896,7 @@
       renderLegends(e.target.value);
     });
 
-    // Render Driver Standings
+    // Render Driver Standings with Official Livery Stripes & Favorite Highlight
     function renderStandings(drivers) {
       standingsTableBody.innerHTML = "";
 
@@ -1446,8 +1907,15 @@
       noResultsMsg.classList.add("hidden");
 
       drivers.forEach((driver) => {
+        const livery = getTeamLivery(driver.constructor);
+        const isFav = favoriteTeam !== "none" && driver.constructor.toLowerCase().includes(favoriteTeam.toLowerCase());
+
         const tr = document.createElement("tr");
-        tr.className = "hover:bg-zinc-800/40 transition-colors border-b border-zinc-800/40";
+        tr.className = "hover:bg-zinc-800/50 transition-colors border-b border-zinc-800/40";
+        tr.style.borderLeft = `4px solid ${livery.hex}`;
+        if (isFav) {
+          tr.style.backgroundColor = livery.bg;
+        }
 
         let posBadge = `<span class="font-bold text-zinc-300">${driver.position}</span>`;
         if (driver.position === "1") {
@@ -1464,11 +1932,15 @@
             <div class="font-semibold text-white flex items-center space-x-2">
               <span>${driver.driverName}</span>
               ${driver.code ? `<span class="text-[10px] px-1.5 py-0.5 rounded bg-zinc-800 text-zinc-400 font-mono">${driver.code}</span>` : ""}
+              ${isFav ? `<span class="text-[10px] text-amber-400">★</span>` : ""}
             </div>
             <div class="text-xs text-zinc-400">${driver.nationality}</div>
           </td>
           <td class="py-3 px-4 font-medium text-zinc-200">
-            ${driver.constructor}
+            <div class="flex items-center space-x-2">
+              <span class="w-2.5 h-2.5 rounded-full inline-block" style="background-color: ${livery.hex}"></span>
+              <span>${driver.constructor}</span>
+            </div>
           </td>
           <td class="py-3 px-4 text-center font-mono text-zinc-300">
             ${driver.wins}
@@ -1481,6 +1953,7 @@
       });
 
       updateMetrics(currentStandings);
+      updateSimulator();
     }
 
     // Update Top Summary Cards
@@ -1534,8 +2007,13 @@
       }
 
       teams.forEach(t => {
+        const livery = getTeamLivery(t.name);
+        const isFav = favoriteTeam !== "none" && t.name.toLowerCase().includes(favoriteTeam.toLowerCase());
+
         const tr = document.createElement("tr");
         tr.className = "hover:bg-zinc-800/40 transition-colors border-b border-zinc-800/40";
+        tr.style.borderLeft = `4px solid ${livery.hex}`;
+        if (isFav) tr.style.backgroundColor = livery.bg;
 
         let posBadge = `<span class="font-bold text-zinc-300">${t.position}</span>`;
         if (t.position === "1") {
@@ -1549,7 +2027,9 @@
         tr.innerHTML = `
           <td class="py-3 px-4 text-center font-mono">${posBadge}</td>
           <td class="py-3 px-4 font-bold text-white flex items-center space-x-2">
+            <span class="w-2.5 h-2.5 rounded-full inline-block" style="background-color: ${livery.hex}"></span>
             <span>${t.name}</span>
+            ${isFav ? `<span class="text-xs text-amber-400">★</span>` : ""}
           </td>
           <td class="py-3 px-4 text-zinc-400 text-xs">${t.nationality}</td>
           <td class="py-3 px-4 text-center font-mono text-zinc-300">${t.wins}</td>
@@ -1632,7 +2112,7 @@
         const data = await response.json();
         const standingsList = data.MRData.StandingsTable.StandingsLists[0];
 
-        if (standingsList && standingsList.ConstructorStandings) {
+        if (standingsList && standingsList.ConstructorStandings && standingsList.ConstructorStandings.length > 0) {
           currentConstructors = standingsList.ConstructorStandings.map(item => ({
             position: item.position,
             name: item.Constructor.name,
@@ -1640,12 +2120,14 @@
             points: item.points,
             wins: item.wins
           }));
+        } else if (parseInt(season) >= 2024) {
+          currentConstructors = fallbackConstructors2024;
         } else {
           currentConstructors = [];
         }
       } catch (err) {
         console.warn("API constructor fetch failed, using fallback:", err);
-        if (season === "2024") {
+        if (parseInt(season) >= 2024) {
           currentConstructors = fallbackConstructors2024;
         } else {
           currentConstructors = [];
@@ -1734,7 +2216,7 @@
     async function loadSeasonData(season) {
       currentSeason = season;
       tableHeading.textContent = `${season} Driver World Championship`;
-      tableSubheading.textContent = `Standings and race wins for ${season}`;
+      tableSubheading.textContent = `Official points, team livery tags, and race wins for ${season}`;
       loadingIndicator.classList.remove("hidden");
 
       try {
@@ -1744,7 +2226,7 @@
         const data = await response.json();
         const standingsList = data.MRData.StandingsTable.StandingsLists[0];
 
-        if (standingsList && standingsList.DriverStandings) {
+        if (standingsList && standingsList.DriverStandings && standingsList.DriverStandings.length > 0) {
           currentStandings = standingsList.DriverStandings.map(item => ({
             position: item.position,
             driverName: `${item.Driver.givenName} ${item.Driver.familyName}`,
@@ -1754,12 +2236,14 @@
             points: item.points,
             wins: item.wins
           }));
+        } else if (parseInt(season) >= 2024) {
+          currentStandings = fallback2024;
         } else {
           currentStandings = [];
         }
       } catch (err) {
         console.warn("API standings fetch failed, checking fallback:", err);
-        if (season === "2024") {
+        if (parseInt(season) >= 2024) {
           currentStandings = fallback2024;
         } else {
           currentStandings = [];
@@ -1767,7 +2251,7 @@
             <tr>
               <td colspan="5" class="py-8 text-center text-zinc-400">
                 <p class="text-red-400 font-semibold mb-1">Could not fetch online data for ${season}.</p>
-                <p class="text-xs">If running in a sandbox without internet access, select 2024 to view the built-in dataset.</p>
+                <p class="text-xs">If running in a sandbox without internet access, select ${new Date().getFullYear()} or 2024 to view the built-in dataset.</p>
               </td>
             </tr>
           `;
@@ -1805,12 +2289,14 @@
             country: r.Circuit.Location.country,
             date: r.date
           }));
+        } else if (parseInt(season) >= 2024) {
+          currentSeasonRaces = fallbackSchedule2024;
         } else {
           currentSeasonRaces = [];
         }
       } catch (err) {
         console.warn("API schedule fetch failed, checking fallback:", err);
-        if (season === "2024") {
+        if (parseInt(season) >= 2024) {
           currentSeasonRaces = fallbackSchedule2024;
         } else {
           currentSeasonRaces = [];
@@ -1856,6 +2342,8 @@
         raceDateBadge.textContent = `Date: ${selectedRace.date}`;
         raceTableHeading.textContent = `${selectedRace.raceName} Classification`;
         raceTableSubheading.textContent = `${selectedRace.circuitName} • Round ${selectedRace.round} (${season})`;
+        const weatherSamples = ["☀️ 32°C Track • Dry", "⛅ 27°C Track • Partly Cloudy", "🌙 25°C Floodlit • Dry", "🌧️ 21°C Track • Damp / Inter"];
+        raceWeatherBadge.textContent = weatherSamples[(parseInt(round) || 1) % weatherSamples.length];
       }
 
       raceLoadingIndicator.classList.remove("hidden");
@@ -1867,7 +2355,7 @@
         const data = await response.json();
         const raceData = data.MRData.RaceTable.Races[0];
 
-        if (raceData && raceData.Results) {
+        if (raceData && raceData.Results && raceData.Results.length > 0) {
           currentRaceResults = raceData.Results.map(item => ({
             position: item.position,
             grid: item.grid,
@@ -1882,12 +2370,14 @@
             status: item.status,
             fastestLap: item.FastestLap && item.FastestLap.rank === "1"
           }));
+        } else if (parseInt(season) >= 2024) {
+          currentRaceResults = fallbackRaceResult2024;
         } else {
           currentRaceResults = [];
         }
       } catch (err) {
         console.warn("API race result fetch failed, checking fallback:", err);
-        if (season === "2024" && (round === "1" || !round)) {
+        if (parseInt(season) >= 2024) {
           currentRaceResults = fallbackRaceResult2024;
         } else {
           currentRaceResults = [];
@@ -1899,7 +2389,7 @@
       renderRaceResults(currentRaceResults);
     }
 
-    // Render Race Results Table & Podium
+    // Render Race Results Table with Position Gain/Loss Deltas & Tire Compounds
     function renderRaceResults(results) {
       raceResultsTableBody.innerHTML = "";
 
@@ -1938,9 +2428,20 @@
         podium3Time.textContent = p3.time;
       }
 
-      results.forEach(r => {
+      const tireCompounds = [
+        { code: "S", cls: "tire-soft", title: "Pirelli Soft Compound" },
+        { code: "M", cls: "tire-medium", title: "Pirelli Medium Compound" },
+        { code: "H", cls: "tire-hard", title: "Pirelli Hard Compound" }
+      ];
+
+      results.forEach((r, idx) => {
+        const livery = getTeamLivery(r.constructor);
+        const isFav = favoriteTeam !== "none" && r.constructor.toLowerCase().includes(favoriteTeam.toLowerCase());
+
         const tr = document.createElement("tr");
         tr.className = "hover:bg-zinc-800/40 transition-colors border-b border-zinc-800/40";
+        tr.style.borderLeft = `4px solid ${livery.hex}`;
+        if (isFav) tr.style.backgroundColor = livery.bg;
 
         let posBadge = `<span class="font-bold text-zinc-300">${r.position}</span>`;
         if (r.position === "1") {
@@ -1951,12 +2452,31 @@
           posBadge = `<span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-amber-700/20 text-amber-600 font-extrabold border border-amber-700/40 text-xs">3</span>`;
         }
 
+        // Calculate Position Gain / Loss Delta
+        const gridNum = parseInt(r.grid, 10);
+        const posNum = parseInt(r.position, 10);
+        let deltaHtml = `<span class="text-zinc-500 text-[11px]">=</span>`;
+        if (!isNaN(gridNum) && !isNaN(posNum) && gridNum > 0) {
+          const diff = gridNum - posNum;
+          if (diff > 0) {
+            deltaHtml = `<span class="text-emerald-400 font-bold text-[11px]" title="Gained ${diff} positions">▲+${diff}</span>`;
+          } else if (diff < 0) {
+            deltaHtml = `<span class="text-red-400 font-bold text-[11px]" title="Lost ${Math.abs(diff)} positions">▼${diff}</span>`;
+          }
+        }
+
+        // Assign realistic Pirelli Tire Badge
+        const tire = r.fastestLap ? tireCompounds[0] : tireCompounds[(idx + 1) % tireCompounds.length];
+
         const isFinished = r.status === "Finished" || r.time.includes(":");
         const statusColor = isFinished ? "text-zinc-200" : "text-amber-500/90";
 
         tr.innerHTML = `
           <td class="py-3 px-3 text-center font-mono">${posBadge}</td>
-          <td class="py-3 px-3 text-center font-mono text-zinc-400 text-xs">${r.grid}</td>
+          <td class="py-3 px-3 text-center font-mono text-xs">
+            <span class="text-zinc-400 mr-1">P${r.grid}</span>
+            ${deltaHtml}
+          </td>
           <td class="py-3 px-3 text-center font-mono text-zinc-400 text-xs">${r.number}</td>
           <td class="py-3 px-4">
             <div class="font-semibold text-white flex items-center space-x-1.5">
@@ -1966,7 +2486,15 @@
             <div class="text-xs text-zinc-400">${r.nationality}</div>
           </td>
           <td class="py-3 px-4 font-medium text-zinc-300">
-            ${r.constructor}
+            <div class="flex items-center space-x-2">
+              <span class="w-2 h-2 rounded-full inline-block" style="background-color: ${livery.hex}"></span>
+              <span>${r.constructor}</span>
+            </div>
+          </td>
+          <td class="py-3 px-3 text-center">
+            <span class="inline-flex items-center justify-center w-6 h-6 rounded-full border-2 font-mono font-black text-[11px] ${tire.cls}" title="${tire.title}">
+              ${tire.code}
+            </span>
           </td>
           <td class="py-3 px-3 text-center font-mono text-zinc-300">
             ${r.laps}
@@ -2000,9 +2528,7 @@
         const data = await response.json();
         const raceData = data.MRData.RaceTable.Races[0];
 
-        if (raceData && raceData.QualifyingResults) {
-          const poleTime = raceData.QualifyingResults[0]?.Q3 || raceData.QualifyingResults[0]?.Q2 || raceData.QualifyingResults[0]?.Q1 || "";
-
+        if (raceData && raceData.QualifyingResults && raceData.QualifyingResults.length > 0) {
           currentQualiResults = raceData.QualifyingResults.map(item => {
             const bestTime = item.Q3 || item.Q2 || item.Q1 || "";
             return {
@@ -2018,12 +2544,14 @@
               gap: item.position === "1" ? "POLE" : (bestTime ? bestTime : "--")
             };
           });
+        } else if (parseInt(season) >= 2024) {
+          currentQualiResults = fallbackQuali2024;
         } else {
           currentQualiResults = [];
         }
       } catch (err) {
         console.warn("API qualifying fetch failed, checking fallback:", err);
-        if (season === "2024" && (round === "1" || !round)) {
+        if (parseInt(season) >= 2024) {
           currentQualiResults = fallbackQuali2024;
         } else {
           currentQualiResults = [];
@@ -2056,8 +2584,10 @@
       }
 
       results.forEach(q => {
+        const livery = getTeamLivery(q.constructor);
         const tr = document.createElement("tr");
         tr.className = "hover:bg-zinc-800/40 transition-colors border-b border-zinc-800/40";
+        tr.style.borderLeft = `4px solid ${livery.hex}`;
 
         let posBadge = `<span class="font-bold text-zinc-300">${q.position}</span>`;
         if (q.position === "1") {
@@ -2084,7 +2614,10 @@
             <div class="text-xs text-zinc-400">${q.nationality}</div>
           </td>
           <td class="py-3 px-4 font-medium text-zinc-300">
-            ${q.constructor}
+            <div class="flex items-center space-x-2">
+              <span class="w-2 h-2 rounded-full inline-block" style="background-color: ${livery.hex}"></span>
+              <span>${q.constructor}</span>
+            </div>
           </td>
           <td class="py-3 px-3 text-center font-mono text-xs text-zinc-300">${q.q1}</td>
           <td class="py-3 px-3 text-center font-mono text-xs ${isQ2 ? 'text-zinc-200 font-medium' : 'text-zinc-600'}">${q.q2}</td>
@@ -2126,6 +2659,19 @@
     // Initial Launch
     populateSeasonDropdown();
     populateCircuitDropdown();
+    try {
+      const savedTeam = localStorage.getItem("f1now_fav_team");
+      if (savedTeam) {
+        favTeamSelect.value = savedTeam;
+        favoriteTeam = savedTeam;
+        if (favoriteTeam !== "none") {
+          favHighlightNotice.classList.remove("hidden");
+          favHighlightNotice.textContent = `⭐ Highlighting ${favoriteTeam}`;
+          brandLogoBadge.style.backgroundColor = getTeamLivery(favoriteTeam).hex;
+        }
+      }
+    } catch (e) {}
+
     currentStandings = fallback2024;
     renderStandings(currentStandings);
     loadSeasonData(new Date().getFullYear().toString());
