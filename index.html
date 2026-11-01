@@ -1499,7 +1499,7 @@
       teamLoadingIndicator.classList.remove("hidden");
 
       try {
-        const url = `https://api.api.jolpi.ca/ergast/f1/${season}/constructorStandings.json`;
+        const url = `https://jolpi.ca/ergast/f1/${season}/constructorStandings.json`;
         const response = await fetch(url);
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
         const data = await response.json();
@@ -1611,7 +1611,7 @@
       loadingIndicator.classList.remove("hidden");
 
       try {
-        const url = `https://api.api.jolpi.ca/ergast/f1/${season}/driverStandings.json`;
+        const url = `https://jolpi.ca/ergast/f1/${season}/driverStandings.json`;
         const response = await fetch(url);
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
         const data = await response.json();
@@ -1663,7 +1663,7 @@
       timingRaceSelect.innerHTML = '<option value="">Loading Grand Prix Calendar...</option>';
 
       try {
-        const url = `https://api.api.jolpi.ca/ergast/f1/${season}.json`;
+        const url = `https://jolpi.ca/ergast/f1/${season}.json`;
         const response = await fetch(url);
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
         const data = await response.json();
@@ -1734,7 +1734,7 @@
       raceLoadingIndicator.classList.remove("hidden");
 
       try {
-        const url = `https://api.api.jolpi.ca/ergast/f1/${season}/${round}/results.json`;
+        const url = `https://jolpi.ca/ergast/f1/${season}/${round}/results.json`;
         const response = await fetch(url);
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
         const data = await response.json();
@@ -1867,7 +1867,7 @@
       qualiLoadingIndicator.classList.remove("hidden");
 
       try {
-        const url = `https://api.api.jolpi.ca/ergast/f1/${season}/${round}/qualifying.json`;
+        const url = `https://jolpi.ca/ergast/f1/${season}/${round}/qualifying.json`;
         const response = await fetch(url);
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
         const data = await response.json();
