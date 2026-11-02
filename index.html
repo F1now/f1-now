@@ -11,6 +11,12 @@
   <meta name="apple-mobile-web-app-title" content="F1 Now">
   <meta name="description" content="Formula 1 Championship Archive, Live Standings, Race Results, Qualifying Timings & Telemetry">
   <meta name="author" content="Sunil Prasath P">
+  <meta property="og:title" content="F1 Now — Formula 1 Championship Archive, Race Hub & Live Telemetry">
+  <meta property="og:description" content="Explore 1950–Present F1 Standings, Live Telemetry, Qualifying Knockouts & Pit-Wall Analytics. Founded & Developed by Sunil Prasath P (@forza_ferrari_15).">
+  <meta property="og:type" content="website">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="F1 Now — Founded & Developed by Sunil Prasath P (@forza_ferrari_15)">
+  <meta name="twitter:description" content="Official F1 Historical Archive, Pit-Wall Telemetry & Interactive Race Hub.">
   <script src="https://cdn.tailwindcss.com/3.4.17"></script>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Titillium+Web:wght@400;600;700;900&display=swap');
@@ -83,6 +89,17 @@
           <span class="hidden md:inline">Rev V10</span>
         </button>
 
+        <button id="quickJumpBtn" class="inline-flex items-center space-x-1.5 px-2.5 py-1 rounded-full font-semibold bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 text-zinc-200 transition cursor-pointer" title="Quick Command Palette (Ctrl + K)">
+          <span>🔍</span>
+          <span class="hidden sm:inline">Quick Jump</span>
+          <kbd class="hidden md:inline-block text-[10px] px-1.5 py-0.2 bg-zinc-900 text-zinc-400 rounded border border-zinc-700 font-mono">⌘K</kbd>
+        </button>
+
+        <button id="shareAppBtn" class="inline-flex items-center space-x-1 px-2.5 py-1 rounded-full font-semibold bg-blue-500/10 hover:bg-blue-500/20 border border-blue-500/30 text-blue-300 transition cursor-pointer" title="Copy & Share Official F1 Now Link">
+          <span>🔗</span>
+          <span class="hidden md:inline">Share</span>
+        </button>
+
         <a href="https://instagram.com/forza_ferrari_15" target="_blank" rel="noopener noreferrer" class="hidden sm:inline-flex items-center space-x-1.5 px-2.5 py-1 rounded-full font-medium bg-gradient-to-r from-purple-900/30 to-pink-900/30 border border-pink-500/30 text-pink-300 hover:text-white transition">
           <span>Developer Profile</span>
         </a>
@@ -139,6 +156,23 @@
         </div>
       </div>
     </div>
+
+    <!-- FIA Race Control Live Broadcast Ticker -->
+    <div class="bg-zinc-900/95 border-t border-zinc-800/80 px-4 py-1.5">
+      <div class="max-w-6xl mx-auto flex items-center justify-between gap-3 text-[11px]">
+        <div class="flex items-center space-x-2 overflow-hidden">
+          <span class="px-2 py-0.2 rounded bg-blue-600 text-white font-black uppercase tracking-wider text-[9px] flex-shrink-0">
+            FIA Race Control
+          </span>
+          <span id="raceControlMsgText" class="font-mono text-emerald-400 font-semibold truncate transition-opacity duration-300">
+            🟢 TRACK CLEAR — DRS ENABLED IN ALL DETECTION ZONES • PIT LANE OPEN
+          </span>
+        </div>
+        <button id="nextRcMsgBtn" class="text-[10px] font-mono text-zinc-400 hover:text-white flex-shrink-0 px-2 py-0.5 rounded bg-zinc-800 border border-zinc-700 cursor-pointer">
+          Next Feed &rarr;
+        </button>
+      </div>
+    </div>
   </header>
 
   <!-- PWA Installation Modal -->
@@ -186,6 +220,80 @@
           Got it
         </button>
       </div>
+    </div>
+  </div>
+
+  <!-- Interactive Driver Profile Dossier Modal (Click Any Driver Row) -->
+  <div id="driverDossierModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div id="dossierBackdrop" class="absolute inset-0 bg-black/75 backdrop-blur-sm"></div>
+    <div class="relative bg-zinc-900 border border-zinc-700 rounded-2xl max-w-lg w-full p-6 shadow-2xl space-y-5 overflow-hidden">
+      <div id="dossierTopAccent" class="h-1.5 w-full absolute top-0 left-0 bg-red-600"></div>
+      <div class="flex items-start justify-between pt-1">
+        <div class="flex items-center space-x-3.5">
+          <div id="dossierNumberBadge" class="w-14 h-14 rounded-2xl bg-zinc-950 border-2 border-red-500 flex items-center justify-center font-black font-mono text-2xl text-white italic shadow-lg">
+            1
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <span id="dossierTeamPill" class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-red-500/20 text-red-300 border border-red-500/30">
+                Red Bull Racing
+              </span>
+              <span id="dossierNatText" class="text-xs text-zinc-400">Dutch</span>
+            </div>
+            <h3 id="dossierDriverName" class="text-xl font-black text-white mt-0.5">Max Verstappen</h3>
+          </div>
+        </div>
+        <button id="closeDossierBtn" class="text-zinc-400 hover:text-white p-1.5 rounded-lg hover:bg-zinc-800 transition cursor-pointer">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+        </button>
+      </div>
+
+      <div class="grid grid-cols-3 gap-2.5 text-center">
+        <div class="bg-zinc-950/80 border border-zinc-800 rounded-xl p-3">
+          <div class="text-[10px] uppercase text-zinc-400">Season Rank</div>
+          <div id="dossierRankVal" class="text-lg font-black text-amber-400 font-mono mt-0.5">P1</div>
+        </div>
+        <div class="bg-zinc-950/80 border border-zinc-800 rounded-xl p-3">
+          <div class="text-[10px] uppercase text-zinc-400">Season Points</div>
+          <div id="dossierPointsVal" class="text-lg font-black text-red-400 font-mono mt-0.5">437 PTS</div>
+        </div>
+        <div class="bg-zinc-950/80 border border-zinc-800 rounded-xl p-3">
+          <div class="text-[10px] uppercase text-zinc-400">Season Wins</div>
+          <div id="dossierWinsVal" class="text-lg font-black text-white font-mono mt-0.5">9 Wins</div>
+        </div>
+      </div>
+
+      <div class="bg-zinc-950/60 border border-zinc-800/80 rounded-xl p-4 space-y-2.5 text-xs">
+        <div class="font-bold text-zinc-200 uppercase tracking-wider text-[10px]">FIA Career & Telemetry Dossier</div>
+        <div class="grid grid-cols-2 gap-2 text-zinc-400">
+          <div>Place of Birth: <strong id="dossierBirthplace" class="text-zinc-200">Hasselt, Belgium</strong></div>
+          <div>Podium Rate: <strong id="dossierPodiumRate" class="text-emerald-400 font-mono">53.1%</strong></div>
+          <div>Driving Style: <strong id="dossierStyle" class="text-zinc-200">Late-Braking / High Rotation</strong></div>
+          <div>Signature Track: <strong id="dossierFavTrack" class="text-amber-300">Spa-Francorchamps</strong></div>
+        </div>
+      </div>
+
+      <div class="flex items-center justify-between pt-2 border-t border-zinc-800 text-xs">
+        <span class="text-zinc-500">Click any driver row to inspect telemetry bio</span>
+        <button id="dossierCompareRadarBtn" class="px-4 py-2 rounded-xl bg-red-600 hover:bg-red-500 text-white font-bold transition cursor-pointer">
+          🕸️ Open in Career Radar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quick Command Palette Modal (Ctrl + K) -->
+  <div id="commandPaletteModal" class="hidden fixed inset-0 z-50 flex items-start justify-center pt-20 p-4">
+    <div id="commandPaletteBackdrop" class="absolute inset-0 bg-black/75 backdrop-blur-sm"></div>
+    <div class="relative bg-zinc-900 border border-zinc-700 rounded-2xl max-w-xl w-full p-4 shadow-2xl space-y-3">
+      <div class="flex items-center space-x-3 border-b border-zinc-800 pb-3">
+        <span class="text-zinc-400 text-base">🔍</span>
+        <input id="commandPaletteInput" type="text" placeholder="Type a season (e.g. 2021, 2007), circuit (Monaco), or view..." class="w-full bg-transparent text-white text-sm focus:outline-none placeholder-zinc-500">
+        <button id="closeCommandPaletteBtn" class="text-xs px-2 py-1 rounded bg-zinc-800 text-zinc-400 hover:text-white cursor-pointer">ESC</button>
+      </div>
+      <div id="commandPaletteList" class="max-h-72 overflow-y-auto space-y-1 text-xs"></div>
     </div>
   </div>
 
@@ -753,10 +861,62 @@
             </div>
           </div>
 
-          <div class="bg-zinc-950/90 border border-zinc-800/80 rounded-xl p-6 flex items-center justify-center min-h-[300px]">
+          <div class="bg-zinc-950/90 border border-zinc-800/80 rounded-xl p-6 flex flex-col items-center justify-center min-h-[300px] relative">
             <svg id="circuitSvg" viewBox="0 0 500 320" class="w-full h-auto max-h-[300px]">
               <!-- Injected by JavaScript -->
             </svg>
+            <!-- Live Telemetry Car Legend Overlay -->
+            <div class="w-full flex flex-wrap items-center justify-between gap-2 pt-3 border-t border-zinc-900 text-[11px]">
+              <div class="flex items-center space-x-3">
+                <span class="inline-flex items-center gap-1.5 font-bold text-red-400">
+                  <span class="w-2.5 h-2.5 rounded-full bg-red-500 animate-ping"></span>
+                  <span>Car 16 (LEC • Ferrari)</span>
+                </span>
+                <span class="inline-flex items-center gap-1.5 font-bold text-blue-400">
+                  <span class="w-2.5 h-2.5 rounded-full bg-blue-500"></span>
+                  <span>Car 1 (VER • Red Bull)</span>
+                </span>
+              </div>
+              <button id="toggleTelemetrySimBtn" class="px-2.5 py-1 rounded bg-zinc-800 hover:bg-zinc-700 text-emerald-400 font-mono text-[10px] border border-zinc-700 cursor-pointer">
+                ⏯️ Live Lap Telemetry Active
+              </button>
+            </div>
+          </div>
+
+          <!-- Real-Time Pit-Wall Telemetry Gauges (Speed, Throttle, Brake, Gear, DRS) -->
+          <div class="bg-zinc-950 border border-zinc-800 rounded-xl p-3.5 mt-4 grid grid-cols-2 sm:grid-cols-5 gap-3 items-center text-xs">
+            <div class="text-center border-r border-zinc-800/80 pr-2">
+              <span class="text-[10px] uppercase text-zinc-500 block">Live Speed</span>
+              <span id="liveTelSpeed" class="text-lg font-black text-white font-mono">318 km/h</span>
+            </div>
+            <div class="text-center border-r border-zinc-800/80 pr-2">
+              <span class="text-[10px] uppercase text-zinc-500 block">Gear & RPM</span>
+              <span id="liveTelGear" class="text-lg font-black text-amber-400 font-mono">G8 • 11,800</span>
+            </div>
+            <div class="space-y-1">
+              <div class="flex justify-between text-[10px] font-mono">
+                <span class="text-zinc-400">THROTTLE</span>
+                <span id="liveTelThrottleVal" class="text-emerald-400 font-bold">98%</span>
+              </div>
+              <div class="w-full h-2 bg-zinc-800 rounded-full overflow-hidden">
+                <div id="liveTelThrottleBar" class="bg-emerald-500 h-full transition-all duration-150" style="width: 98%"></div>
+              </div>
+            </div>
+            <div class="space-y-1">
+              <div class="flex justify-between text-[10px] font-mono">
+                <span class="text-zinc-400">BRAKE</span>
+                <span id="liveTelBrakeVal" class="text-red-400 font-bold">0%</span>
+              </div>
+              <div class="w-full h-2 bg-zinc-800 rounded-full overflow-hidden">
+                <div id="liveTelBrakeBar" class="bg-red-500 h-full transition-all duration-150" style="width: 0%"></div>
+              </div>
+            </div>
+            <div class="text-center col-span-2 sm:col-span-1">
+              <span class="text-[10px] uppercase text-zinc-500 block">Rear Wing</span>
+              <span id="liveTelDrsBadge" class="inline-block mt-0.5 px-2.5 py-0.5 rounded font-mono font-black text-[11px] bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">
+                DRS OPEN
+              </span>
+            </div>
           </div>
 
           <div class="grid grid-cols-3 gap-3 mt-4 text-center text-xs">
@@ -2137,10 +2297,13 @@
             <feComposite in="SourceGraphic" in2="blur" operator="over" />
           </filter>
         </defs>
-        <path d="${c.svgPath}" fill="none" stroke="#27272a" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" />
+        <path id="activeTrackPath" d="${c.svgPath}" fill="none" stroke="#27272a" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" />
         <path d="${c.svgPath}" fill="none" stroke="url(#trackGrad)" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" filter="url(#glow)" />
         <circle cx="70" cy="220" r="5" fill="#ffffff" />
         <text x="85" y="225" fill="#a1a1aa" font-size="11" font-family="monospace">Start / Finish</text>
+        <!-- Animated Telemetry Cars -->
+        <circle id="simCar1Dot" cx="70" cy="220" r="7" fill="#ef4444" stroke="#ffffff" stroke-width="2" />
+        <circle id="simCar2Dot" cx="70" cy="220" r="6" fill="#3b82f6" stroke="#ffffff" stroke-width="1.5" />
       `;
     }
 
@@ -2220,12 +2383,18 @@
       }
       noResultsMsg.classList.add("hidden");
 
+      const leaderPoints = Math.max(1, parseFloat(drivers[0]?.points) || 1);
+
       drivers.forEach((driver) => {
         const livery = getTeamLivery(driver.constructor);
         const isFav = favoriteTeam !== "none" && driver.constructor.toLowerCase().includes(favoriteTeam.toLowerCase());
+        const ptsNum = parseFloat(driver.points) || 0;
+        const pctOfLeader = Math.min(100, Math.round((ptsNum / leaderPoints) * 100));
+        const gapToLeader = ptsNum === leaderPoints ? "LEADER" : `-${(leaderPoints - ptsNum).toFixed(0)} PTS`;
 
         const tr = document.createElement("tr");
-        tr.className = "hover:bg-zinc-800/50 transition-colors border-b border-zinc-800/40";
+        tr.className = "hover:bg-zinc-800/60 transition-colors border-b border-zinc-800/40 cursor-pointer group";
+        tr.title = `Click to open ${driver.driverName} Telemetry Dossier`;
         tr.style.borderLeft = `4px solid ${livery.hex}`;
         if (isFav) {
           tr.style.backgroundColor = livery.bg;
@@ -2243,10 +2412,11 @@
         tr.innerHTML = `
           <td class="py-3 px-4 text-center font-mono">${posBadge}</td>
           <td class="py-3 px-4">
-            <div class="font-semibold text-white flex items-center space-x-2">
+            <div class="font-semibold text-white group-hover:text-red-400 transition-colors flex items-center space-x-2">
               <span>${driver.driverName}</span>
               ${driver.code ? `<span class="text-[10px] px-1.5 py-0.5 rounded bg-zinc-800 text-zinc-400 font-mono">${driver.code}</span>` : ""}
               ${isFav ? `<span class="text-[10px] text-amber-400">★</span>` : ""}
+              <span class="opacity-0 group-hover:opacity-100 text-[10px] text-zinc-400 font-normal transition-opacity">🔍 Dossier</span>
             </div>
             <div class="text-xs text-zinc-400">${driver.nationality}</div>
           </td>
@@ -2259,10 +2429,19 @@
           <td class="py-3 px-4 text-center font-mono text-zinc-300">
             ${driver.wins}
           </td>
-          <td class="py-3 px-4 text-right font-bold text-red-400 font-mono text-base">
-            ${driver.points}
+          <td class="py-3 px-4 text-right font-mono">
+            <div class="flex flex-col items-end space-y-1">
+              <div class="flex items-baseline space-x-1.5">
+                <span class="text-[10px] text-zinc-500">${gapToLeader}</span>
+                <span class="font-bold text-red-400 text-base">${driver.points}</span>
+              </div>
+              <div class="w-24 h-1.5 bg-zinc-800 rounded-full overflow-hidden">
+                <div class="h-full rounded-full" style="width: ${pctOfLeader}%; background-color: ${livery.hex}"></div>
+              </div>
+            </div>
           </td>
         `;
+        tr.addEventListener("click", () => openDriverDossier(driver));
         standingsTableBody.appendChild(tr);
       });
 
@@ -3544,6 +3723,295 @@
     renderTriviaQuestion();
     initPredictorDropdowns();
     renderShowroom();
+
+    // =========================================================================
+    // BROADCAST UPGRADES: DRIVER DOSSIER, LIVE TELEMETRY TRACE, RACE CONTROL, COMMAND PALETTE
+    // =========================================================================
+
+    // 1. Interactive Driver Profile Dossier Modal
+    const driverBioExtras = {
+      "Max Verstappen": { num: "1", birth: "Hasselt, Belgium", podiumRate: "54.2%", style: "Late-Braking / High Rotation", track: "Spa-Francorchamps", radarKey: "verstappen" },
+      "Lando Norris": { num: "4", birth: "Bristol, United Kingdom", podiumRate: "38.5%", style: "Smooth Mid-Corner Speed", track: "Silverstone", radarKey: "norris" },
+      "Charles Leclerc": { num: "16", birth: "Monte-Carlo, Monaco", podiumRate: "41.0%", style: " Trail-Braking / Qualifying Edge", track: "Monza & Monaco", radarKey: "leclerc" },
+      "Oscar Piastri": { num: "81", birth: "Melbourne, Australia", podiumRate: "34.8%", style: "Calculated / High-Speed Apex", track: "Lusail & Spa", radarKey: "norris" },
+      "Carlos Sainz": { num: "55", birth: "Madrid, Spain", podiumRate: "26.4%", style: "Tactical / Tyre Management", track: "Singapore & Monza", radarKey: "alonso" },
+      "George Russell": { num: "63", birth: "King's Lynn, UK", podiumRate: "28.1%", style: "Precision Turn-In", track: "Interlagos", radarKey: "hamilton" },
+      "Lewis Hamilton": { num: "44", birth: "Stevenage, United Kingdom", podiumRate: "56.5%", style: "Late Apex & Tyre Whisperer", track: "Silverstone", radarKey: "hamilton" },
+      "Fernando Alonso": { num: "14", birth: "Oviedo, Spain", podiumRate: "26.4%", style: "Adaptive / Racecraft Master", track: "Barcelona & Suzuka", radarKey: "alonso" }
+    };
+
+    const driverDossierModal = document.getElementById("driverDossierModal");
+    const dossierBackdrop = document.getElementById("dossierBackdrop");
+    const closeDossierBtn = document.getElementById("closeDossierBtn");
+    const dossierTopAccent = document.getElementById("dossierTopAccent");
+    const dossierNumberBadge = document.getElementById("dossierNumberBadge");
+    const dossierTeamPill = document.getElementById("dossierTeamPill");
+    const dossierNatText = document.getElementById("dossierNatText");
+    const dossierDriverName = document.getElementById("dossierDriverName");
+    const dossierRankVal = document.getElementById("dossierRankVal");
+    const dossierPointsVal = document.getElementById("dossierPointsVal");
+    const dossierWinsVal = document.getElementById("dossierWinsVal");
+    const dossierBirthplace = document.getElementById("dossierBirthplace");
+    const dossierPodiumRate = document.getElementById("dossierPodiumRate");
+    const dossierStyle = document.getElementById("dossierStyle");
+    const dossierFavTrack = document.getElementById("dossierFavTrack");
+    const dossierCompareRadarBtn = document.getElementById("dossierCompareRadarBtn");
+    let currentDossierRadarKey = "verstappen";
+
+    function openDriverDossier(driver) {
+      playTelemetryBeep(840, 0.06);
+      const livery = getTeamLivery(driver.constructor);
+      const extra = driverBioExtras[driver.driverName] || {
+        num: driver.position || "F1",
+        birth: `${driver.nationality} Motorsport Academy`,
+        podiumRate: "32.0%",
+        style: "High-Downforce Precision",
+        track: "Circuit de Spa-Francorchamps",
+        radarKey: "verstappen"
+      };
+      currentDossierRadarKey = extra.radarKey;
+
+      dossierTopAccent.style.backgroundColor = livery.hex;
+      dossierNumberBadge.style.borderColor = livery.hex;
+      dossierNumberBadge.textContent = extra.num;
+      dossierTeamPill.textContent = driver.constructor;
+      dossierNatText.textContent = driver.nationality;
+      dossierDriverName.textContent = driver.driverName;
+      dossierRankVal.textContent = `P${driver.position}`;
+      dossierPointsVal.textContent = `${driver.points} PTS`;
+      dossierWinsVal.textContent = `${driver.wins} Wins`;
+      dossierBirthplace.textContent = extra.birth;
+      dossierPodiumRate.textContent = extra.podiumRate;
+      dossierStyle.textContent = extra.style;
+      dossierFavTrack.textContent = extra.track;
+
+      driverDossierModal.classList.remove("hidden");
+    }
+
+    function closeDriverDossier() {
+      driverDossierModal.classList.add("hidden");
+    }
+
+    closeDossierBtn.addEventListener("click", closeDriverDossier);
+    dossierBackdrop.addEventListener("click", closeDriverDossier);
+    dossierCompareRadarBtn.addEventListener("click", () => {
+      closeDriverDossier();
+      radarDriver1Select.value = currentDossierRadarKey;
+      switchTab("analytics");
+      renderRadarChart();
+      renderProgressionChart();
+      renderPitStrategy();
+    });
+
+    // 2. Live Animated Car Telemetry on Circuit SVG
+    let telemetrySimRunning = true;
+    let telemetryProgress = 0;
+    const toggleTelemetrySimBtn = document.getElementById("toggleTelemetrySimBtn");
+    const liveTelSpeed = document.getElementById("liveTelSpeed");
+    const liveTelGear = document.getElementById("liveTelGear");
+    const liveTelThrottleVal = document.getElementById("liveTelThrottleVal");
+    const liveTelThrottleBar = document.getElementById("liveTelThrottleBar");
+    const liveTelBrakeVal = document.getElementById("liveTelBrakeVal");
+    const liveTelBrakeBar = document.getElementById("liveTelBrakeBar");
+    const liveTelDrsBadge = document.getElementById("liveTelDrsBadge");
+
+    toggleTelemetrySimBtn.addEventListener("click", () => {
+      telemetrySimRunning = !telemetrySimRunning;
+      toggleTelemetrySimBtn.textContent = telemetrySimRunning ? "⏯️ Live Lap Telemetry Active" : "⏸️ Telemetry Paused";
+      playTelemetryBeep(640, 0.05);
+    });
+
+    setInterval(() => {
+      if (!telemetrySimRunning) return;
+      const pathEl = document.getElementById("activeTrackPath");
+      const car1 = document.getElementById("simCar1Dot");
+      const car2 = document.getElementById("simCar2Dot");
+      if (!pathEl || !car1 || !car2 || typeof pathEl.getTotalLength !== "function") return;
+
+      try {
+        const totalLen = pathEl.getTotalLength();
+        if (totalLen <= 0) return;
+        telemetryProgress = (telemetryProgress + 0.008) % 1;
+        const p2Progress = (telemetryProgress + 0.94) % 1;
+
+        const pt1 = pathEl.getPointAtLength(telemetryProgress * totalLen);
+        const pt2 = pathEl.getPointAtLength(p2Progress * totalLen);
+        car1.setAttribute("cx", pt1.x);
+        car1.setAttribute("cy", pt1.y);
+        car2.setAttribute("cx", pt2.x);
+        car2.setAttribute("cy", pt2.y);
+
+        // Simulate realistic corner braking vs straight acceleration
+        const phase = Math.sin(telemetryProgress * Math.PI * 6);
+        if (phase > 0.15) {
+          // Full throttle straight
+          const spd = Math.round(295 + phase * 48);
+          const gear = spd > 315 ? 8 : 7;
+          const rpm = Math.round(11100 + phase * 950);
+          liveTelSpeed.textContent = `${spd} km/h`;
+          liveTelGear.textContent = `G${gear} • ${rpm.toLocaleString()}`;
+          liveTelThrottleVal.textContent = "100%";
+          liveTelThrottleBar.style.width = "100%";
+          liveTelBrakeVal.textContent = "0%";
+          liveTelBrakeBar.style.width = "0%";
+          if (phase > 0.65) {
+            liveTelDrsBadge.textContent = "DRS OPEN";
+            liveTelDrsBadge.className = "inline-block mt-0.5 px-2.5 py-0.5 rounded font-mono font-black text-[11px] bg-emerald-500/20 text-emerald-300 border border-emerald-500/40";
+          } else {
+            liveTelDrsBadge.textContent = "DRS READY";
+            liveTelDrsBadge.className = "inline-block mt-0.5 px-2.5 py-0.5 rounded font-mono font-black text-[11px] bg-zinc-800 text-zinc-400 border border-zinc-700";
+          }
+        } else {
+          // Heavy braking / corner apex
+          const spd = Math.round(135 + (phase + 1) * 70);
+          const gear = Math.max(2, Math.min(6, Math.floor(spd / 42)));
+          const brk = Math.round(Math.max(0, -phase * 95));
+          const thr = Math.max(10, 60 - brk);
+          liveTelSpeed.textContent = `${spd} km/h`;
+          liveTelGear.textContent = `G${gear} • 9,400`;
+          liveTelThrottleVal.textContent = `${thr}%`;
+          liveTelThrottleBar.style.width = `${thr}%`;
+          liveTelBrakeVal.textContent = `${brk}%`;
+          liveTelBrakeBar.style.width = `${brk}%`;
+          liveTelDrsBadge.textContent = "DRS CLOSED";
+          liveTelDrsBadge.className = "inline-block mt-0.5 px-2.5 py-0.5 rounded font-mono font-black text-[11px] bg-zinc-900 text-zinc-500 border border-zinc-800";
+        }
+      } catch (e) {}
+    }, 80);
+
+    // 3. FIA Race Control Live Broadcast Ticker
+    const rcMessages = [
+      "🟢 TRACK CLEAR — DRS ENABLED IN ALL DETECTION ZONES • PIT LANE OPEN",
+      "🟣 FASTEST LAP — CAR 16 (C. LECLERC) 1:29.165 IN SECTOR 2 & 3",
+      "📡 FIA STEWARDS — NO FURTHER INVESTIGATION ON TURN 1 INCIDENT",
+      "🛞 PIRELLI TELEMETRY — OPTIMAL UNDERCUT WINDOW OPENING AT LAP 16",
+      "👑 F1 NOW — FOUNDED & DEVELOPED BY SUNIL PRASATH P (@FORZA_FERRARI_15)"
+    ];
+    let rcMsgIdx = 0;
+    const raceControlMsgText = document.getElementById("raceControlMsgText");
+    const nextRcMsgBtn = document.getElementById("nextRcMsgBtn");
+
+    function cycleRaceControlMsg() {
+      rcMsgIdx = (rcMsgIdx + 1) % rcMessages.length;
+      raceControlMsgText.textContent = rcMessages[rcMsgIdx];
+    }
+
+    nextRcMsgBtn.addEventListener("click", () => {
+      playTelemetryBeep(880, 0.04);
+      cycleRaceControlMsg();
+    });
+    setInterval(cycleRaceControlMsg, 6500);
+
+    // 4. Quick Command Palette (Ctrl+K / Quick Jump)
+    const quickJumpBtn = document.getElementById("quickJumpBtn");
+    const commandPaletteModal = document.getElementById("commandPaletteModal");
+    const commandPaletteBackdrop = document.getElementById("commandPaletteBackdrop");
+    const closeCommandPaletteBtn = document.getElementById("closeCommandPaletteBtn");
+    const commandPaletteInput = document.getElementById("commandPaletteInput");
+    const commandPaletteList = document.getElementById("commandPaletteList");
+
+    const quickCommands = [
+      { title: "🏆 Jump to 2026 Current Season Standings", action: () => { switchTab("standings"); seasonSelect.value = new Date().getFullYear().toString(); loadSeasonData(seasonSelect.value); } },
+      { title: "🔥 Load 2021 Classic Season (Verstappen vs Hamilton)", action: () => { switchTab("standings"); seasonSelect.value = "2021"; loadSeasonData("2021"); } },
+      { title: "⚡ Load 2016 Silver War Season (Rosberg vs Hamilton)", action: () => { switchTab("standings"); seasonSelect.value = "2016"; loadSeasonData("2016"); } },
+      { title: "🔴 Load 2007 Ferrari Title Season (Kimi Räikkönen)", action: () => { switchTab("standings"); seasonSelect.value = "2007"; loadSeasonData("2007"); } },
+      { title: "👑 Load 2004 Schumacher Ferrari Dominance Season", action: () => { switchTab("standings"); seasonSelect.value = "2004"; loadSeasonData("2004"); } },
+      { title: "🗺️ Open Live Monaco Circuit Telemetry Replay", action: () => { switchTab("circuit"); circuitSelect.value = "monaco"; renderCircuitDetails("monaco"); } },
+      { title: "🗺️ Open Monza Temple of Speed Telemetry Replay", action: () => { switchTab("circuit"); circuitSelect.value = "monza"; renderCircuitDetails("monza"); } },
+      { title: "🕸️ Compare Drivers in Pit-Wall Radar Analytics", action: () => { switchTab("analytics"); renderRadarChart(); renderProgressionChart(); renderPitStrategy(); } },
+      { title: "🚦 Play 'Lights Out' F1 Reaction Time Game", action: () => { switchTab("fanzone"); } },
+      { title: "🔧 Explore F1 Car & Hybrid Power Unit Showroom", action: () => { switchTab("showroom"); renderShowroom(); } }
+    ];
+
+    function renderCommandList(filterText = "") {
+      const q = filterText.trim().toLowerCase();
+      commandPaletteList.innerHTML = "";
+
+      // If user typed a 4-digit year between 1950 and 2026, offer direct jump
+      const yearMatch = q.match(/^(19[5-9]\d|20[0-2]\d)$/);
+      if (yearMatch) {
+        const yr = yearMatch[1];
+        const yrBtn = document.createElement("button");
+        yrBtn.className = "w-full text-left px-3.5 py-2.5 rounded-xl bg-red-600/20 border border-red-500/40 text-white font-bold flex items-center justify-between cursor-pointer";
+        yrBtn.innerHTML = `<span>📅 Load ${yr} Formula 1 World Championship Season</span><span class="font-mono text-[10px] text-red-300">ENTER</span>`;
+        yrBtn.addEventListener("click", () => {
+          closeCommandPalette();
+          switchTab("standings");
+          seasonSelect.value = yr;
+          loadSeasonData(yr);
+        });
+        commandPaletteList.appendChild(yrBtn);
+      }
+
+      quickCommands
+        .filter(cmd => !q || cmd.title.toLowerCase().includes(q))
+        .forEach(cmd => {
+          const btn = document.createElement("button");
+          btn.className = "w-full text-left px-3.5 py-2.5 rounded-xl hover:bg-zinc-800 text-zinc-200 font-medium flex items-center justify-between transition cursor-pointer";
+          btn.innerHTML = `<span>${cmd.title}</span><span class="text-[10px] font-mono text-zinc-500">Jump &rarr;</span>`;
+          btn.addEventListener("click", () => {
+            closeCommandPalette();
+            cmd.action();
+          });
+          commandPaletteList.appendChild(btn);
+        });
+    }
+
+    function openCommandPalette() {
+      playTelemetryBeep(780, 0.05);
+      commandPaletteModal.classList.remove("hidden");
+      commandPaletteInput.value = "";
+      renderCommandList("");
+      setTimeout(() => commandPaletteInput.focus(), 50);
+    }
+
+    function closeCommandPalette() {
+      commandPaletteModal.classList.add("hidden");
+    }
+
+    quickJumpBtn.addEventListener("click", openCommandPalette);
+    closeCommandPaletteBtn.addEventListener("click", closeCommandPalette);
+    commandPaletteBackdrop.addEventListener("click", closeCommandPalette);
+    commandPaletteInput.addEventListener("input", (e) => renderCommandList(e.target.value));
+
+    window.addEventListener("keydown", (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") {
+        e.preventDefault();
+        openCommandPalette();
+      } else if (e.key === "Escape") {
+        closeCommandPalette();
+        closeDriverDossier();
+      }
+    });
+
+    // 5. One-Click Share / Copy Link Button
+    const shareAppBtn = document.getElementById("shareAppBtn");
+    shareAppBtn.addEventListener("click", async () => {
+      playTelemetryBeep(940, 0.07);
+      const shareUrl = window.location.href.startsWith("http") ? window.location.href : "https://f1now.github.io/f1-now/";
+      if (navigator.share) {
+        try {
+          await navigator.share({
+            title: "F1 Now — Formula 1 Hub & Telemetry",
+            text: "Check out F1 Now by Sunil Prasath P (@forza_ferrari_15) — F1 Standings, Telemetry & Analytics!",
+            url: shareUrl
+          });
+          return;
+        } catch (err) {}
+      }
+      try {
+        const tempInput = document.createElement("input");
+        tempInput.value = shareUrl;
+        document.body.appendChild(tempInput);
+        tempInput.select();
+        document.execCommand("copy");
+        document.body.removeChild(tempInput);
+      } catch (e) {}
+      shareAppBtn.innerHTML = `<span>✅</span><span class="hidden md:inline">Link Copied!</span>`;
+      setTimeout(() => {
+        shareAppBtn.innerHTML = `<span>🔗</span><span class="hidden md:inline">Share</span>`;
+      }, 2500);
+    });
   </script>
 </body>
 </html>
