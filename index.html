@@ -137,9 +137,10 @@
           <span>🔗</span>
           <span class="hidden md:inline">Share</span>
         </button>
-<a href="https://instagram.com/race_trace_online" target="_blank" rel="noopener noreferrer" class="hidden sm:inline-flex items-center space-x-1.5 px-2.5 py-1 rounded-full font-medium bg-gradient-to-r from-purple-900/30 to-pink-900/30 border border-pink-500/30 text-pink-300 hover:text-white transition">
-          <span>Developer Profile</span>
-        </a>
+<button id="devInfoBtn" type="button" class="inline-flex items-center space-x-1.5 px-2.5 py-1 rounded-full font-medium bg-gradient-to-r from-purple-900/30 to-pink-900/30 border border-pink-500/30 text-pink-300 hover:text-white transition cursor-pointer">
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          <span>Developer Info</span>
+        </button>
           </div>
         </details>
 
@@ -167,6 +168,38 @@
       </div>
     </div>
   </header>
+
+  <!-- Developer Info Modal -->
+  <div id="devInfoModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4" role="dialog" aria-modal="true" aria-labelledby="devInfoTitle">
+    <div id="devInfoBackdrop" class="absolute inset-0 bg-black/70 backdrop-blur-sm"></div>
+    <div class="relative glass-panel border border-zinc-800 rounded-2xl max-w-md w-full max-h-[90vh] overflow-y-auto shadow-2xl" style="border-top:3px solid #E10600">
+      <button id="closeDevInfoBtn" type="button" aria-label="Close" class="absolute top-3 right-3 text-zinc-400 hover:text-white p-1 rounded-lg hover:bg-zinc-800 transition">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+      </button>
+      <div class="p-6 space-y-5">
+        <div class="flex items-center gap-4">
+          <div class="w-16 h-16 rounded-full bg-gradient-to-tr from-amber-500 via-pink-500 to-purple-600 p-0.5 flex-shrink-0">
+            <div class="w-full h-full bg-zinc-950 rounded-full flex items-center justify-center font-display text-2xl font-bold text-white">SP</div>
+          </div>
+          <div>
+            <div class="kicker text-pink-400">Founder &amp; Lead Developer</div>
+            <h3 id="devInfoTitle" class="font-display text-2xl font-bold text-white leading-tight">Sunil Prasath P</h3>
+            <div class="text-sm text-zinc-400">@race_trace_online</div>
+          </div>
+        </div>
+        <p class="text-sm text-zinc-300 leading-relaxed">Hi, I&rsquo;m <strong class="text-white">Sunil Prasath P</strong>, founder and developer of F1 Now. I&rsquo;m a Formula 1 fan who wanted one clean place to explore every championship since 1950, check race results and qualifying timings, and compare drivers with pit-wall style analytics. I built F1 Now to turn raw race data into something fast, visual and fun. It&rsquo;s a passion project and it keeps growing, so your feedback shapes what I build next. Behind it is <a href="https://instagram.com/race_trace_online" target="_blank" rel="noopener noreferrer" class="text-pink-300 hover:text-white font-semibold">@race_trace_online</a> on Instagram &mdash; message me with ideas, bugs or a season you&rsquo;d love to see featured.</p>
+        <div class="text-sm">
+          <div class="flex justify-between gap-4 py-2 border-b border-zinc-800/70"><span class="text-zinc-400">Role</span><span class="text-white font-semibold text-right">Founder &amp; Lead Developer</span></div>
+          <div class="flex justify-between gap-4 py-2 border-b border-zinc-800/70"><span class="text-zinc-400">Project</span><span class="text-white font-semibold text-right">F1 Now</span></div>
+          <div class="flex justify-between gap-4 py-2 border-b border-zinc-800/70"><span class="text-zinc-400">Instagram</span><a href="https://instagram.com/race_trace_online" target="_blank" rel="noopener noreferrer" class="text-pink-300 hover:text-white font-semibold text-right">@race_trace_online</a></div>
+          <div class="flex justify-between gap-4 py-2 border-b border-zinc-800/70"><span class="text-zinc-400">Data source</span><span class="text-white font-semibold text-right">Jolpica F1 API</span></div>
+          <!-- Add more rows here by copying a row above, e.g. Email, GitHub, Location -->
+        </div>
+        <a href="https://instagram.com/race_trace_online" target="_blank" rel="noopener noreferrer" class="block text-center px-5 py-2.5 rounded-xl font-bold text-sm bg-gradient-to-r from-purple-600 via-pink-600 to-red-500 text-white shadow-lg shadow-pink-600/20 hover:opacity-90 transition">Visit Instagram Profile</a>
+        <p class="text-[11px] text-zinc-500">Unofficial fan project. Not affiliated with Formula 1, the FIA or any team; F1 and team names belong to their owners.</p>
+      </div>
+    </div>
+  </div>
 
   <!-- PWA Installation Modal -->
   <div id="installModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
@@ -333,6 +366,10 @@
       <button id="tabShowroomBtn" class="px-4 py-2.5 font-bold text-sm border-b-2 border-transparent text-zinc-400 hover:text-zinc-200 flex items-center space-x-2 transition-colors whitespace-nowrap">
         <span>🔧</span>
         <span>Car Showroom</span>
+      </button>
+      <button id="tabDeveloperBtn" type="button" class="px-4 py-2.5 font-bold text-sm border-b-2 border-transparent text-pink-300 hover:text-white flex items-center space-x-2 transition-colors whitespace-nowrap">
+        <span><svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>
+        <span>Developer</span>
       </button>
     </div>
 
@@ -3911,7 +3948,8 @@
       { title: "🗺️ Open Monza Temple of Speed Telemetry Replay", action: () => { switchTab("circuit"); circuitSelect.value = "monza"; renderCircuitDetails("monza"); } },
       { title: "🕸️ Compare Drivers in Pit-Wall Radar Analytics", action: () => { switchTab("analytics"); renderRadarChart(); renderProgressionChart(); renderPitStrategy(); } },
       { title: "🚦 Play 'Lights Out' F1 Reaction Time Game", action: () => { switchTab("fanzone"); } },
-      { title: "🔧 Explore F1 Car & Hybrid Power Unit Showroom", action: () => { switchTab("showroom"); renderShowroom(); } }
+      { title: "🔧 Explore F1 Car & Hybrid Power Unit Showroom", action: () => { switchTab("showroom"); renderShowroom(); } },
+      { title: "👤 Open Developer Info", action: () => openDevInfo() }
     ];
 
     function renderCommandList(filterText = "") {
@@ -4061,6 +4099,22 @@
       const m = document.getElementById("moreMenu");
       if (m && !m.contains(e.target)) m.removeAttribute("open");
     });
+
+    // ===== Developer Info modal =====
+    const devInfoModal = document.getElementById("devInfoModal");
+    function openDevInfo() {
+      const menu = document.getElementById("moreMenu");
+      if (menu) menu.removeAttribute("open");
+      playTelemetryBeep(780, 0.05);
+      devInfoModal.classList.remove("hidden");
+      document.getElementById("closeDevInfoBtn").focus();
+    }
+    function closeDevInfo() { devInfoModal.classList.add("hidden"); }
+    document.getElementById("devInfoBtn").addEventListener("click", openDevInfo);
+    document.getElementById("tabDeveloperBtn").addEventListener("click", openDevInfo);
+    document.getElementById("closeDevInfoBtn").addEventListener("click", closeDevInfo);
+    document.getElementById("devInfoBackdrop").addEventListener("click", closeDevInfo);
+    window.addEventListener("keydown", e => { if (e.key === "Escape") closeDevInfo(); });
 
     // 6. Automatic PWA Service Worker Registration
     if ("serviceWorker" in navigator && window.location.protocol.startsWith("http")) {
