@@ -18,10 +18,11 @@
   <meta property="og:type" content="website">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="F1 Now — Founded & Developed by Sunil Prasath P (@race_trace_online)">
-  <meta name="twitter:description" content="Official F1 Historical Archive, Pit-Wall Telemetry & Interactive Race Hub.">
+  <meta name="twitter:description" content="Unofficial F1 fan archive, Pit-Wall Telemetry & Interactive Race Hub.">
   <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script>tailwind.config={theme:{extend:{colors:{red:{400:"#ff5a4d",500:"#f0291b",600:"#E10600",700:"#b80500"}}}}}</script>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Titillium+Web:wght@400;600;700;900&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Titillium+Web:wght@400;600;700;900&display=swap');
     body {
       font-family: 'Titillium Web', -apple-system, BlinkMacSystemFont, sans-serif;
       background-color: #09090b;
@@ -39,6 +40,35 @@
     .tire-medium { border-color: #facc15; color: #fde047; background: rgba(250, 204, 21, 0.15); }
     .tire-hard { border-color: #e4e4e7; color: #f4f4f5; background: rgba(244, 244, 245, 0.15); }
     .tire-inter { border-color: #22c55e; color: #4ade80; background: rgba(34, 197, 94, 0.15); }
+    h1,h2,h3,th,.font-display,.tabbar button,#brandLogoBadge{font-family:'Barlow Condensed','Titillium Web',sans-serif}
+    body{background-color:#08080a;background-image:radial-gradient(ellipse at 50% -10%,rgba(225,6,0,.18),transparent 55%),repeating-linear-gradient(45deg,rgba(255,255,255,.018) 0 2px,transparent 2px 6px);background-size:100% 100%,auto;background-attachment:fixed}
+    td,.font-mono{font-variant-numeric:tabular-nums}
+    .text-\[9px\]{font-size:11px!important}.text-\[10px\]{font-size:11.5px!important}.text-\[11px\]{font-size:12px!important}
+    .text-zinc-500{color:#8d8d98!important}
+    .glass-panel{border-color:rgba(255,255,255,.07)!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.04),0 10px 30px -14px rgba(0,0,0,.7)}
+    #brandLogoBadge{background-image:linear-gradient(135deg,rgba(255,255,255,.2),rgba(0,0,0,.35));clip-path:polygon(10px 0,100% 0,calc(100% - 10px) 100%,0 100%);padding:.3rem 1.2rem;letter-spacing:.02em}
+    .tabbar{gap:.25rem}.tabbar button{text-transform:uppercase;letter-spacing:.05em;font-size:.9rem;border-radius:.5rem .5rem 0 0}
+    .tabbar button.text-red-500{color:#fff!important;background:linear-gradient(to top,rgba(225,6,0,.22),transparent)}
+    .tabbar button:hover{background:rgba(255,255,255,.04)}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+    @keyframes shimmer{to{background-position:-200% 0}}
+    main>div[id$="View"]{animation:fadeUp .4s ease both}
+    .row-in{animation:fadeUp .45s ease both}
+    .skeleton,.is-loading #heroLeader,.is-loading .hero-stat>div:first-child{background:linear-gradient(90deg,#1c1c20 25%,#2c2c33 37%,#1c1c20 63%);background-size:200% 100%;animation:shimmer 1.3s infinite;border-radius:.375rem;color:transparent!important}
+    .is-loading #heroLeader{width:14rem;max-width:100%}
+    .hero{position:relative;background:radial-gradient(circle at 88% 0%,color-mix(in srgb,var(--team,#E10600) 38%,transparent),transparent 60%),linear-gradient(160deg,rgba(24,24,27,.92),rgba(9,9,11,.96));border-top:3px solid var(--team,#E10600)!important}
+    .hero::after{content:"";position:absolute;inset:0;background:repeating-linear-gradient(115deg,transparent 0 22px,rgba(255,255,255,.025) 22px 24px);pointer-events:none}
+    .kicker{font-size:11.5px;letter-spacing:.18em;text-transform:uppercase;color:#a1a1aa;font-weight:700}
+    .hero-stat{min-width:90px;padding:.6rem .9rem;border-radius:.75rem;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08)}
+    .pod{position:relative;overflow:hidden;border-top:3px solid var(--team,#52525b)!important;background-image:linear-gradient(180deg,color-mix(in srgb,var(--team,transparent) 22%,transparent),transparent 70%);transition:transform .25s,box-shadow .25s}
+    .pod:hover{transform:translateY(-4px);box-shadow:0 18px 40px -16px var(--team,#000)}
+    .pod::after{content:attr(data-n);position:absolute;right:.7rem;bottom:-1.3rem;font:700 7.5rem/1 'Barlow Condensed',sans-serif;color:rgba(255,255,255,.06);pointer-events:none}
+    @media(min-width:640px){.pod-1{min-height:210px}.pod-2{min-height:170px}.pod-3{min-height:140px}}
+    #podium1Driver,#podium2Driver,#podium3Driver{font-family:'Barlow Condensed',sans-serif;font-size:1.6rem;line-height:1.1}
+    #moreMenu>summary::-webkit-details-marker{display:none}
+    #moreMenu button,#moreMenu a{display:flex!important;width:100%;justify-content:flex-start;border-radius:.5rem;gap:.5rem}
+    #moreMenu span.hidden{display:inline!important}
+    @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
   </style>
 </head>
 <body class="bg-zinc-950 text-zinc-100 min-h-screen flex flex-col">
@@ -76,20 +106,11 @@
           </select>
         </div>
 
-        <span class="hidden lg:inline-flex items-center px-2.5 py-1 rounded-full font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-          <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 mr-1.5 animate-pulse"></span>
-          Live Telemetry Ready
-        </span>
+        
 
-        <button id="audioToggleBtn" class="inline-flex items-center space-x-1 px-2.5 py-1 rounded-full font-semibold bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 text-amber-400 transition cursor-pointer" title="Toggle Pit Wall Telemetry Audio">
-          <span id="audioIcon">🔊</span>
-          <span id="audioLabel" class="hidden md:inline">FX On</span>
-        </button>
+        
 
-        <button id="revEngineBtn" class="inline-flex items-center space-x-1 px-2.5 py-1 rounded-full font-semibold bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 text-amber-300 transition cursor-pointer" title="Rev F1 V10 Engine Note">
-          <span>🏎️</span>
-          <span class="hidden md:inline">Rev V10</span>
-        </button>
+        
 
         <button id="quickJumpBtn" class="inline-flex items-center space-x-1.5 px-2.5 py-1 rounded-full font-semibold bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 text-zinc-200 transition cursor-pointer" title="Quick Command Palette (Ctrl + K)">
           <span>🔍</span>
@@ -97,14 +118,30 @@
           <kbd class="hidden md:inline-block text-[10px] px-1.5 py-0.2 bg-zinc-900 text-zinc-400 rounded border border-zinc-700 font-mono">⌘K</kbd>
         </button>
 
-        <button id="shareAppBtn" class="inline-flex items-center space-x-1 px-2.5 py-1 rounded-full font-semibold bg-blue-500/10 hover:bg-blue-500/20 border border-blue-500/30 text-blue-300 transition cursor-pointer" title="Copy & Share Official F1 Now Link">
+        
+
+        
+
+        <details id="moreMenu" class="relative">
+          <summary class="list-none cursor-pointer w-8 h-8 flex items-center justify-center rounded-full bg-zinc-800 border border-zinc-700 text-zinc-300 hover:text-white" aria-label="More options"><svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/></svg></summary>
+          <div class="absolute right-0 mt-2 w-56 p-2 space-y-1 rounded-xl glass-panel border border-zinc-700 shadow-2xl z-50">
+<button id="audioToggleBtn" class="inline-flex items-center space-x-1 px-2.5 py-1 rounded-full font-semibold bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 text-amber-400 transition cursor-pointer" title="Toggle Pit Wall Telemetry Audio">
+          <span id="audioIcon">🔊</span>
+          <span id="audioLabel" class="hidden md:inline">FX On</span>
+        </button>
+<button id="revEngineBtn" class="inline-flex items-center space-x-1 px-2.5 py-1 rounded-full font-semibold bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 text-amber-300 transition cursor-pointer" title="Rev F1 V10 Engine Note">
+          <span>🏎️</span>
+          <span class="hidden md:inline">Rev V10</span>
+        </button>
+<button id="shareAppBtn" class="inline-flex items-center space-x-1 px-2.5 py-1 rounded-full font-semibold bg-blue-500/10 hover:bg-blue-500/20 border border-blue-500/30 text-blue-300 transition cursor-pointer" title="Copy & Share Official F1 Now Link">
           <span>🔗</span>
           <span class="hidden md:inline">Share</span>
         </button>
-
-        <a href="https://instagram.com/race_trace_online" target="_blank" rel="noopener noreferrer" class="hidden sm:inline-flex items-center space-x-1.5 px-2.5 py-1 rounded-full font-medium bg-gradient-to-r from-purple-900/30 to-pink-900/30 border border-pink-500/30 text-pink-300 hover:text-white transition">
+<a href="https://instagram.com/race_trace_online" target="_blank" rel="noopener noreferrer" class="hidden sm:inline-flex items-center space-x-1.5 px-2.5 py-1 rounded-full font-medium bg-gradient-to-r from-purple-900/30 to-pink-900/30 border border-pink-500/30 text-pink-300 hover:text-white transition">
           <span>Developer Profile</span>
         </a>
+          </div>
+        </details>
 
         <button id="installBtn" class="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-full font-bold text-xs bg-red-600 hover:bg-red-700 text-white shadow-md shadow-red-600/30 transition cursor-pointer">
           <span>📲</span>
@@ -113,58 +150,12 @@
       </div>
     </div>
 
-    <!-- Live Next Grand Prix Countdown & Weather Bar -->
-    <div class="bg-zinc-950/90 border-t border-zinc-800/80 px-4 py-2">
-      <div class="max-w-6xl mx-auto flex flex-wrap items-center justify-between gap-3 text-xs">
-        <div class="flex items-center space-x-2">
-          <span class="px-2 py-0.5 rounded bg-red-600/20 border border-red-500/40 text-red-400 font-black uppercase tracking-wider text-[10px]">
-            Up Next
-          </span>
-          <span id="nextGpName" class="font-bold text-white">São Paulo Grand Prix • Interlagos</span>
-          <span id="nextGpSessionLabel" class="text-zinc-400 hidden md:inline">— Qualifying & Sprint Shootout</span>
-        </div>
-
-        <div class="flex items-center space-x-4">
-          <!-- Countdown Digits -->
-          <div class="flex items-center space-x-1.5 font-mono">
-            <div class="bg-zinc-900 border border-zinc-800 px-2 py-0.5 rounded text-center">
-              <span id="cdDays" class="font-black text-amber-400">04</span>
-              <span class="text-[9px] text-zinc-500 uppercase">d</span>
-            </div>
-            <span class="text-zinc-600 font-bold">:</span>
-            <div class="bg-zinc-900 border border-zinc-800 px-2 py-0.5 rounded text-center">
-              <span id="cdHours" class="font-black text-amber-400">18</span>
-              <span class="text-[9px] text-zinc-500 uppercase">h</span>
-            </div>
-            <span class="text-zinc-600 font-bold">:</span>
-            <div class="bg-zinc-900 border border-zinc-800 px-2 py-0.5 rounded text-center">
-              <span id="cdMins" class="font-black text-amber-400">42</span>
-              <span class="text-[9px] text-zinc-500 uppercase">m</span>
-            </div>
-            <span class="text-zinc-600 font-bold">:</span>
-            <div class="bg-zinc-900 border border-zinc-800 px-2 py-0.5 rounded text-center">
-              <span id="cdSecs" class="font-black text-red-400">19</span>
-              <span class="text-[9px] text-zinc-500 uppercase">s</span>
-            </div>
-          </div>
-
-          <!-- Track Weather Pill -->
-          <div class="hidden sm:flex items-center space-x-2 bg-zinc-900/90 border border-zinc-800 px-2.5 py-0.5 rounded-full text-[11px] text-zinc-300">
-            <span id="liveTrackWeatherIcon">⛅</span>
-            <span id="liveTrackTemp">Track: 36°C</span>
-            <span class="text-zinc-600">•</span>
-            <span id="liveRainRisk" class="text-blue-400">💧 20% Rain</span>
-          </div>
-        </div>
-      </div>
-    </div>
-
     <!-- FIA Race Control Live Broadcast Ticker -->
     <div class="bg-zinc-900/95 border-t border-zinc-800/80 px-4 py-1.5">
       <div class="max-w-6xl mx-auto flex items-center justify-between gap-3 text-[11px]">
         <div class="flex items-center space-x-2 overflow-hidden">
           <span class="px-2 py-0.2 rounded bg-blue-600 text-white font-black uppercase tracking-wider text-[9px] flex-shrink-0">
-            FIA Race Control
+            Fan-made demo feed
           </span>
           <span id="raceControlMsgText" class="font-mono text-emerald-400 font-semibold truncate transition-opacity duration-300">
             🟢 TRACK CLEAR — DRS ENABLED IN ALL DETECTION ZONES • PIT LANE OPEN
@@ -302,7 +293,7 @@
   <!-- Main Content Container -->
   <main class="max-w-6xl mx-auto px-4 py-6 flex-1 w-full space-y-6">
     <!-- View Switcher Tabs -->
-    <div class="flex border-b border-zinc-800 space-x-2 overflow-x-auto">
+    <div class="tabbar flex border-b border-zinc-800 space-x-2 overflow-x-auto">
       <button id="tabStandingsBtn" class="px-4 py-2.5 font-bold text-sm border-b-2 border-red-600 text-red-500 flex items-center space-x-2 transition-colors whitespace-nowrap">
         <span>🏆</span>
         <span>Driver Standings</span>
@@ -379,6 +370,18 @@
 
     <!-- SECTION 1: DRIVER STANDINGS VIEW -->
     <div id="standingsView" class="space-y-6">
+      <section id="heroCard" class="hero is-loading glass-panel rounded-2xl p-5 sm:p-7 overflow-hidden">
+        <div class="relative z-10 flex flex-wrap items-end justify-between gap-6">
+          <div>
+            <div id="heroKicker" class="kicker">Championship</div>
+            <div id="heroSeason" class="font-display text-5xl sm:text-7xl font-bold leading-none text-white">----</div>
+            <div id="heroLeader" class="font-display text-2xl sm:text-3xl font-semibold mt-3 text-white">Loading…</div>
+            <div id="heroTeam" class="text-sm text-zinc-400 mt-1">&nbsp;</div>
+          </div>
+          <div class="flex gap-3 text-center"><div class="hero-stat"><div id="heroPts" class="font-display text-3xl font-bold text-white">--</div><div class="kicker">Points</div></div><div class="hero-stat"><div id="heroWins" class="font-display text-3xl font-bold text-white">--</div><div class="kicker">Wins</div></div><div class="hero-stat"><div id="heroGap" class="font-display text-3xl font-bold text-white">--</div><div class="kicker">Lead over P2</div></div></div>
+        </div>
+      </section>
+
       <!-- Key Metrics Cards -->
       <section class="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <div class="glass-panel border border-zinc-800 rounded-xl p-4 flex items-center space-x-4">
@@ -613,8 +616,8 @@
       </section>
 
       <!-- Podium Top 3 Showcase -->
-      <section id="podiumSection" class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div class="glass-panel border border-zinc-800 rounded-xl p-4 flex flex-col justify-between order-2 sm:order-1">
+      <section id="podiumSection" class="grid grid-cols-1 sm:grid-cols-3 sm:items-end gap-4">
+        <div data-n="2" class="pod pod-2 glass-panel border border-zinc-800 rounded-xl p-4 flex flex-col justify-between order-2 sm:order-1">
           <div class="flex items-center justify-between mb-2">
             <span class="text-xs font-bold uppercase tracking-wider text-zinc-400">P2 Podium</span>
             <span class="w-6 h-6 rounded-full bg-zinc-300/20 text-zinc-200 flex items-center justify-center font-bold text-xs border border-zinc-400/30">2</span>
@@ -624,7 +627,7 @@
           <div id="podium2Time" class="text-xs text-zinc-500 font-mono mt-2">--</div>
         </div>
 
-        <div class="bg-gradient-to-b from-red-950/40 to-zinc-900 border border-amber-500/40 rounded-xl p-4 flex flex-col justify-between order-1 sm:order-2 shadow-lg shadow-amber-500/5">
+        <div data-n="1" class="pod pod-1 bg-gradient-to-b from-red-950/40 to-zinc-900 border border-amber-500/40 rounded-xl p-4 flex flex-col justify-between order-1 sm:order-2 shadow-lg shadow-amber-500/5">
           <div class="flex items-center justify-between mb-2">
             <span class="text-xs font-bold uppercase tracking-wider text-amber-400 flex items-center gap-1">
               <span>🏆</span> Winner
@@ -636,7 +639,7 @@
           <div id="podium1Time" class="text-xs text-amber-400 font-mono font-bold mt-2">--</div>
         </div>
 
-        <div class="glass-panel border border-zinc-800 rounded-xl p-4 flex flex-col justify-between order-3 sm:order-3">
+        <div data-n="3" class="pod pod-3 glass-panel border border-zinc-800 rounded-xl p-4 flex flex-col justify-between order-3 sm:order-3">
           <div class="flex items-center justify-between mb-2">
             <span class="text-xs font-bold uppercase tracking-wider text-zinc-400">P3 Podium</span>
             <span class="w-6 h-6 rounded-full bg-amber-700/20 text-amber-600 flex items-center justify-center font-bold text-xs border border-amber-700/30">3</span>
@@ -1961,25 +1964,6 @@
     const simScenarioNote = document.getElementById("simScenarioNote");
     const resetSimBtn = document.getElementById("resetSimBtn");
 
-    // Live Countdown Ticker Logic
-    const cdDays = document.getElementById("cdDays");
-    const cdHours = document.getElementById("cdHours");
-    const cdMins = document.getElementById("cdMins");
-    const cdSecs = document.getElementById("cdSecs");
-    let countdownTarget = Date.now() + (4 * 86400 + 18 * 3600 + 42 * 60 + 19) * 1000;
-
-    setInterval(() => {
-      const diff = Math.max(0, Math.floor((countdownTarget - Date.now()) / 1000));
-      const d = Math.floor(diff / 86400);
-      const h = Math.floor((diff % 86400) / 3600);
-      const m = Math.floor((diff % 3600) / 60);
-      const s = diff % 60;
-      cdDays.textContent = String(d).padStart(2, "0");
-      cdHours.textContent = String(h).padStart(2, "0");
-      cdMins.textContent = String(m).padStart(2, "0");
-      cdSecs.textContent = String(s).padStart(2, "0");
-    }, 1000);
-
     // Favorite Team Theme & Highlighting
     favTeamSelect.addEventListener("change", (e) => {
       favoriteTeam = e.target.value;
@@ -2381,13 +2365,14 @@
 
       if (!drivers || drivers.length === 0) {
         noResultsMsg.classList.remove("hidden");
+        updateHero(currentStandings);
         return;
       }
       noResultsMsg.classList.add("hidden");
 
       const leaderPoints = Math.max(1, parseFloat(drivers[0]?.points) || 1);
 
-      drivers.forEach((driver) => {
+      drivers.forEach((driver, idx) => {
         const livery = getTeamLivery(driver.constructor);
         const isFav = favoriteTeam !== "none" && driver.constructor.toLowerCase().includes(favoriteTeam.toLowerCase());
         const ptsNum = parseFloat(driver.points) || 0;
@@ -2395,7 +2380,8 @@
         const gapToLeader = ptsNum === leaderPoints ? "LEADER" : `-${(leaderPoints - ptsNum).toFixed(0)} PTS`;
 
         const tr = document.createElement("tr");
-        tr.className = "hover:bg-zinc-800/60 transition-colors border-b border-zinc-800/40 cursor-pointer group";
+        tr.className = "hover:bg-zinc-800/60 transition-colors border-b border-zinc-800/40 cursor-pointer group row-in";
+        tr.style.animationDelay = `${Math.min(idx, 20) * 30}ms`;
         tr.title = `Click to open ${driver.driverName} Telemetry Dossier`;
         tr.style.borderLeft = `4px solid ${livery.hex}`;
         if (isFav) {
@@ -2453,6 +2439,7 @@
 
     // Update Top Summary Cards
     function updateMetrics(list) {
+      updateHero(currentStandings);
       statSeasonYear.textContent = `${currentSeason} Season`;
       statDriverCount.textContent = list.length.toString();
 
@@ -2713,6 +2700,8 @@
       tableHeading.textContent = `${season} Driver World Championship`;
       tableSubheading.textContent = `Official points, team livery tags, and race wins for ${season}`;
       loadingIndicator.classList.remove("hidden");
+      standingsTableBody.innerHTML = skeletonRows(8);
+      document.getElementById("heroCard").classList.add("is-loading");
 
       try {
         const url = `https://api.jolpi.ca/ergast/f1/${season}/driverStandings.json`;
@@ -2909,17 +2898,17 @@
 
       if (p1) {
         podium1Driver.textContent = p1.driverName;
-        podium1Team.textContent = p1.constructor;
+        podium1Team.textContent = p1.constructor; tintPodium(1, p1.constructor);
         podium1Time.textContent = p1.time;
       }
       if (p2) {
         podium2Driver.textContent = p2.driverName;
-        podium2Team.textContent = p2.constructor;
+        podium2Team.textContent = p2.constructor; tintPodium(2, p2.constructor);
         podium2Time.textContent = p2.time;
       }
       if (p3) {
         podium3Driver.textContent = p3.driverName;
-        podium3Team.textContent = p3.constructor;
+        podium3Team.textContent = p3.constructor; tintPodium(3, p3.constructor);
         podium3Time.textContent = p3.time;
       }
 
@@ -4013,6 +4002,64 @@
       setTimeout(() => {
         shareAppBtn.innerHTML = `<span>🔗</span><span class="hidden md:inline">Share</span>`;
       }, 2500);
+    });
+
+    // ===== Premium UI layer =====
+    function prefersReduced() { return window.matchMedia("(prefers-reduced-motion: reduce)").matches; }
+    function countUp(el, to, ms = 900) {
+      if (!isFinite(to)) { el.textContent = "--"; return; }
+      if (prefersReduced()) { el.textContent = to; return; }
+      const t0 = performance.now();
+      (function step(t) {
+        const p = Math.min(1, (t - t0) / ms);
+        el.textContent = Math.round(to * (1 - Math.pow(1 - p, 3)));
+        if (p < 1) requestAnimationFrame(step);
+      })(t0);
+    }
+    function updateHero(list) {
+      const $ = id => document.getElementById(id);
+      const hero = $("heroCard"); hero.classList.remove("is-loading");
+      $("heroSeason").textContent = currentSeason;
+      $("heroKicker").textContent = String(currentSeason) === String(new Date().getFullYear()) ? "Championship leader" : "World Champion";
+      if (!list || !list.length) {
+        $("heroLeader").textContent = "No data for this season"; $("heroTeam").textContent = "\u00a0";
+        ["heroPts", "heroWins", "heroGap"].forEach(i => { $(i).textContent = "--"; }); return;
+      }
+      const c = list[0], n = list[1];
+      hero.style.setProperty("--team", getTeamLivery(c.constructor).hex);
+      $("heroLeader").textContent = c.driverName;
+      $("heroTeam").textContent = c.constructor;
+      countUp($("heroPts"), parseFloat(c.points));
+      countUp($("heroWins"), parseInt(c.wins, 10));
+      $("heroGap").textContent = n ? "+" + (parseFloat(c.points) - parseFloat(n.points)).toFixed(0) : "--";
+    }
+    function skeletonRows(n) {
+      const cell = w => `<td class="py-3.5 px-4"><div class="skeleton h-4 ${w}"></div></td>`;
+      return Array.from({ length: n }, () => `<tr class="border-b border-zinc-800/40">${cell("w-6 mx-auto")}${cell("w-40")}${cell("w-32")}${cell("w-6 mx-auto")}${cell("w-14 ml-auto")}</tr>`).join("");
+    }
+    function tintPodium(n, constructor) {
+      const card = document.getElementById("podium" + n + "Driver").closest(".pod");
+      if (card) card.style.setProperty("--team", getTeamLivery(constructor).hex);
+    }
+    const TAB_ICONS = {
+      tabStandingsBtn: "M6 9H4.5a2.5 2.5 0 0 1 0-5H6M18 9h1.5a2.5 2.5 0 0 0 0-5H18M4 22h16M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22M18 2H6v7a6 6 0 0 0 12 0V2Z",
+      tabConstructorsBtn: "M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z",
+      tabRacesBtn: "M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1zM4 22v-7",
+      tabTimingBtn: "M10 2h4M12 14l3-3M12 22a8 8 0 1 0 0-16 8 8 0 0 0 0 16z",
+      tabCircuitBtn: "M3 6l6-3 6 3 6-3v15l-6 3-6-3-6 3zM9 3v15M15 6v15",
+      tabLegendsBtn: "M2 4l3 12h14l3-12-6 5-4-7-4 7zM5 20h14",
+      tabSimulatorBtn: "M4 2h16v20H4zM8 6h8M8 10h.01M12 10h.01M16 10h.01M8 14h.01M12 14h.01M16 14h.01M8 18h8",
+      tabAnalyticsBtn: "M3 3v18h18M8 17v-5M13 17V7M18 17v-9",
+      tabFanZoneBtn: "M8 5a3 3 0 0 1 3-3h2a3 3 0 0 1 3 3v14a3 3 0 0 1-3 3h-2a3 3 0 0 1-3-3zM12 7h.01M12 12h.01M12 17h.01",
+      tabShowroomBtn: "M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94z"
+    };
+    Object.entries(TAB_ICONS).forEach(([id, d]) => {
+      const sp = document.getElementById(id)?.querySelector("span");
+      if (sp) sp.innerHTML = `<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="${d}"/></svg>`;
+    });
+    document.addEventListener("click", e => {
+      const m = document.getElementById("moreMenu");
+      if (m && !m.contains(e.target)) m.removeAttribute("open");
     });
 
     // 6. Automatic PWA Service Worker Registration
